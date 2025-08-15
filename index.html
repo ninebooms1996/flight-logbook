@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Flight Logbook — Firebase + Google Login (Reset, No MetaMask)</title>
+  <title>Flight Logbook — Firebase + Google Login</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -23,17 +23,21 @@
     header{position:sticky;top:0;z-index:20;backdrop-filter:saturate(140%) blur(10px);
       background:linear-gradient(180deg, rgba(10,14,22,.85), rgba(10,14,22,.65)); border-bottom:1px solid var(--border);}
     .wrap{max-width:1200px;margin:0 auto;padding:16px}
-    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:var(--shadow)}
-    h1{font-size:18px;margin:0}
-    .spacer{flex:1}
+    /* --- Centered brand with airplane icon + actions pinned right --- */
+    .headbar{position:relative;min-height:60px;display:flex;justify-content:center;align-items:center}
+    .brand{display:flex;gap:12px;align-items:center;justify-content:center}
+    .brand h1{font-size:18px;margin:0}
+    .brand .plane{width:28px;height:28px}
+    .actions{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:flex;gap:8px;flex-wrap:wrap}
+    .avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border);display:none}
+    .tag{padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px;background:#0e1422;margin-left:8px}
+
     .btn{border:1px solid var(--border);background:linear-gradient(180deg,#0f1624,#0b101b);color:var(--fg);
       padding:9px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:.2s}
     .btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
     .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0a0e16;border:none}
     .btn.ghost{background:transparent}
-    .tag{padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px;background:#0e1422}
+
     main{padding:20px 0 40px}
     .grid{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
     @media (max-width:1000px){.grid{grid-template-columns:1fr}}
@@ -52,38 +56,45 @@
     .hint{font-size:12px;color:var(--muted)}
     table{width:100%;border-collapse:separate;border-spacing:0 10px}
     thead th{font-size:12px;color:var(--muted);text-align:left;padding:0 10px}
-    tbody tr{background:#0f1624;border:1px solid var(--border)}
+    tbody tr{background:#0f1624;border:1px solid var(--border);transition:background .6s}
     tbody td{padding:12px 10px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
     tbody tr td:first-child{border-left:1px solid var(--border);border-top-left-radius:12px;border-bottom-left-radius:12px}
     tbody tr td:last-child{border-right:1px solid var(--border);border-top-right-radius:12px;border-bottom-right-radius:12px}
     .right{text-align:right}
     .chips{display:flex;gap:6px;flex-wrap:wrap}
     .chip{background:#111827;color:#cbd5e1;padding:6px 10px;border-radius:999px;border:1px solid var(--border);font-size:12px}
+    /* highlight for newly-added row */
+    tr.flash{background:#0b3a2a !important}
+
     .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(4,7,12,.6);z-index:50}
     .panel{width:min(920px,92vw);max-height:90vh;overflow:auto;background:#0e1422;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
-    .kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#cbd5e1;background:#0b1220;border:1px solid var(--border);border-radius:6px;padding:2px 6px}
+
     .footer{opacity:.7;font-size:12px;text-align:center;padding:20px}
-    details.testbox{margin-top:12px;border:1px dashed var(--border);border-radius:12px;padding:10px}
-    details.testbox summary{cursor:pointer}
-    .ok{color:#86efac}.ng{color:#fca5a5}
-    .avatar{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border)}
   </style>
 </head>
 <body>
   <header>
-    <div class="wrap row">
+    <div class="wrap headbar">
+      <!-- Centered Brand -->
       <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
+        <!-- airplane icon -->
+        <svg class="plane" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M21 16.5l-8.5-3.4-4.1 4.1 1.2-5.6L3 9l18-6-6 18-2.6-6.6L21 16.5z" fill="url(#g)"/>
+          <defs><linearGradient id="g" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#7dd3fc"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>
+        </svg>
         <h1>Flight Logbook</h1>
         <span class="tag" id="uidTag">Signed out</span>
-        <img id="avatar" class="avatar" alt="" style="display:none">
+        <img id="avatar" class="avatar" alt="">
       </div>
-      <div class="spacer"></div>
-      <button class="btn ghost" id="importAirportsBtn">Import Airports (CSV)</button>
-      <button class="btn ghost" id="seedSampleBtn">Seed Sample Airports</button>
-      <button class="btn" id="googleLoginBtn" title="Sign in with Google">Google Login</button>
-      <button class="btn" id="signOutBtn" style="display:none">Sign out</button>
-      <button class="btn primary" id="addDemoBtn">Quick Demo Flight</button>
+
+      <!-- Actions pinned right -->
+      <div class="actions">
+        <button class="btn ghost" id="importAirportsBtn">Import Airports (CSV)</button>
+        <button class="btn ghost" id="seedSampleBtn">Seed Sample Airports</button>
+        <button class="btn" id="googleLoginBtn" title="Sign in with Google">Google Login</button>
+        <button class="btn" id="signOutBtn" style="display:none">Sign out</button>
+        <button class="btn primary" id="addDemoBtn">Quick Demo Flight</button>
+      </div>
     </div>
   </header>
 
@@ -96,8 +107,9 @@
     </section>
 
     <div class="grid">
+      <!-- FORM -->
       <section class="card" id="formCard">
-        <div class="hd"><strong>บันทึกเที่ยวบิน</strong> <span class="hint">Firebase only • ไม่มี API ภายนอก</span></div>
+        <div class="hd"><strong>บันทึกเที่ยวบิน</strong></div>
         <div class="bd">
           <form id="logForm">
             <div class="row">
@@ -137,19 +149,6 @@
             </div>
 
             <div class="row">
-              <div class="field"><label>Night (hh:mm)</label><input id="nightTime" placeholder="0:00"></div>
-              <div class="field"><label>IFR (hh:mm)</label><input id="ifrTime" placeholder="0:00"></div>
-              <div class="field"><label>PIC / SIC</label>
-                <select id="crewRole">
-                  <option value="PIC">PIC</option>
-                  <option value="SIC">SIC</option>
-                  <option value="Dual">Dual</option>
-                  <option value="Instructor">Instructor</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="row">
               <div class="field" style="flex:2"><label>หมายเหตุ</label><textarea id="remarks" rows="2" placeholder="Routing, MEL, ATC, Fuel, Wx"></textarea></div>
               <div class="field"><label>เวลาบิน (คำนวณอัตโนมัติ)</label>
                 <input id="airTime" placeholder="0:00" readonly>
@@ -162,16 +161,11 @@
               <button type="submit" class="btn primary">บันทึก</button>
             </div>
           </form>
-
-          <details class="testbox">
-            <summary>🧪 Self-Tests (No MetaMask & Time Calc)</summary>
-            <div id="testResults" class="hint"></div>
-            <button class="btn" id="runTestsBtn" type="button">Run Self-Tests</button>
-          </details>
         </div>
       </section>
 
-      <section class="card">
+      <!-- LIST -->
+      <section class="card" id="listCard">
         <div class="hd">
           <strong>รายการบันทึก</strong>
           <div class="row" style="flex-wrap:wrap">
@@ -187,7 +181,6 @@
           <div class="chips" style="margin-bottom:10px">
             <span class="chip">Realtime Sync</span>
             <span class="chip">Offline-first</span>
-            <span class="chip">No external API</span>
           </div>
           <table>
             <thead>
@@ -208,7 +201,7 @@
       </section>
     </div>
 
-    <div class="footer">Made with Firebase • เปิดใช้ Google Sign-In ใน Firebase Console และโฮสต์ไฟล์ผ่าน http(s)</div>
+    <div class="footer">Made with Firebase</div>
   </main>
 
   <!-- Import Airports Modal -->
@@ -242,7 +235,6 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
       getDocs, startAt, endAt, limit, enableIndexedDbPersistence, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    // === Project Config (client-visible) ===
     const firebaseConfig = {
       apiKey: "AIzaSyB-mqfAKi-qWowUgJXph-Z7qn9KQX31CbE",
       authDomain: "flight-logbook-50b3a.firebaseapp.com",
@@ -252,9 +244,7 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-
-    // Offline persistence
-    enableIndexedDbPersistence(db).catch(() => {/* ignore multi-tabs error */});
+    enableIndexedDbPersistence(db).catch(()=>{});
 
     // ===== UI Refs =====
     const $ = (id)=>document.getElementById(id);
@@ -270,7 +260,6 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
     const filterBtn = $("filterBtn"), exportBtn = $("exportBtn"), printBtn = $("printBtn");
     const importAirportsBtn = $("importAirportsBtn"), seedSampleBtn = $("seedSampleBtn");
     const importModal = $("importModal"), closeImport = $("closeImport"), csvArea = $("csvArea"), runImport = $("runImport");
-    const runTestsBtn = $("runTestsBtn"), testResults = $("testResults");
 
     const statTotal = $("statTotal"), stat30 = $("stat30"), statCount = $("statCount"), statNightIFR = $("statNightIFR");
 
@@ -323,13 +312,10 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
         console.error(e);
       }
     });
-    signOutBtn.addEventListener("click", async ()=>{
-      try{ await signOut(auth); }catch(e){ console.error(e); }
-    });
+    signOutBtn.addEventListener("click", async ()=>{ try{ await signOut(auth); }catch(e){ console.error(e); }});
     getRedirectResult(auth).catch(e=> console.warn("Redirect result error:", e?.message||e));
 
     onAuthStateChanged(auth, (user)=>{
-      window.firebaseAuthUser = user || null;
       if(user){
         window.currentUID = user.uid;
         uidTag.textContent = (user.displayName ? user.displayName+" • " : "") + "UID " + user.uid.slice(0,8)+"…";
@@ -363,7 +349,7 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
       });
 
       rows.innerHTML = filtered.map(x=>`
-        <tr>
+        <tr data-id="${x.id}" class="${x.id===window._justAddedId?'flash':''}">
           <td>${x.depDate}</td>
           <td><strong>${x.flightNo||""}</strong><div class="hint">${x.airline||""}</div></td>
           <td>${x.route||""}</td>
@@ -376,6 +362,15 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
             <button class="btn" onclick='window.deleteFlight("${x.id}")'>ลบ</button>
           </td>
         </tr>`).join("");
+
+      // remove flash after a moment
+      if(window._justAddedId){
+        setTimeout(()=>{
+          const tr = rows.querySelector(`tr[data-id="${window._justAddedId}"]`);
+          if(tr) tr.classList.remove('flash');
+          window._justAddedId = null;
+        }, 1500);
+      }
 
       // stats
       const sum = filtered.reduce((acc,x)=>({
@@ -439,9 +434,14 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
         await setDoc(doc(db,"users",window.currentUID,"flights",window._editingId), data, {merge:true});
         window._editingId = null;
       }else{
-        await addDoc(flightsCol(), data);
+        const ref = await addDoc(flightsCol(), data);
+        window._justAddedId = ref.id; // for highlight
       }
       logForm.reset(); setToday(); calcAirTime();
+
+      // scroll to list after save
+      const listCard = document.getElementById('listCard');
+      if(listCard){ listCard.scrollIntoView({behavior:"smooth", block:"start"}); }
     });
 
     searchBox.addEventListener("input", ()=> renderRows(cache));
@@ -503,62 +503,6 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
 
     // Init
     fillOffsets(); setToday(); calcAirTime();
-
-    // ===== Self-Tests =====
-    function assert(name, cond){ return {name, pass: !!cond}; }
-    function runTests(){
-      const results = [];
-      // 0) Environment sanity
-      results.push(assert("ไฟล์นี้รันผ่าน http(s) ไม่ใช่ file://", location.protocol !== "file:"));
-
-      // 1) No MetaMask / web3 usage by THIS file
-      const scripts = Array.from(document.querySelectorAll("script")).map(s=> (s.innerText||"") + " " + (s.src||""));
-      const joined = scripts.join("\n").toLowerCase();
-      const badWords = ["metamask","window.ethereum","ethereum.request","ethers.js","web3.js","connect wallet","disconnect wallet"];
-      const foundBad = badWords.some(w=> joined.includes(w));
-      results.push(assert("โค้ดหน้านี้ไม่มีคำสั่งที่เกี่ยวกับ MetaMask/web3", !foundBad));
-      results.push(assert("ไม่มีปุ่มหรือ selector เกี่ยวกับ wallet", !document.querySelector("[data-wallet], #connectWallet, .connect-wallet")));
-
-      // 2) เวลา: เคสคำนวณ (เดิม)
-      const a_dep = utcMsFromLocal("2025-01-01","23:30","+07:00");
-      const a_arr = utcMsFromLocal("2025-01-02","05:30","+09:00");
-      results.push(assert("เวลาบิน BKK→HND 23:30→05:30 = 4:00", Math.round((a_arr - a_dep)/60000) === 240));
-      const b_dep = utcMsFromLocal("2025-01-10","09:00","+07:00");
-      const b_arr = utcMsFromLocal("2025-01-10","10:30","+07:00");
-      results.push(assert("เวลาบิน DMK→HKT 09:00→10:30 = 1:30", Math.round((b_arr - b_dep)/60000) === 90));
-      const c_dep = utcMsFromLocal("2025-02-01","08:00","-08:00");
-      const c_arr = utcMsFromLocal("2025-02-01","16:34","-05:00");
-      results.push(assert("เวลาบิน LAX→JFK 08:00→16:34 = 5:34", Math.round((c_arr - c_dep)/60000) === (5*60+34)));
-
-      // 3) เวลา: เพิ่มเคสใหม่
-      const d_dep = utcMsFromLocal("2025-03-01","23:55","+10:00");
-      const d_arr = utcMsFromLocal("2025-03-02","05:05","+12:00");
-      results.push(assert("เวลาบิน SYD→AKL 23:55→05:05 = 3:10", Math.round((d_arr - d_dep)/60000) === 190));
-      const e_dep = utcMsFromLocal("2025-04-01","09:20","+05:45");
-      const e_arr = utcMsFromLocal("2025-04-01","10:50","+05:45");
-      results.push(assert("เวลาบิน KTM→KTM 09:20→10:50 = 1:30 (+05:45)", Math.round((e_arr - e_dep)/60000) === 90));
-
-      // 4) Provider check (ถ้า login แล้วต้องมาจาก google.com)
-      const user = (window && window.firebaseAuthUser) || null;
-      results.push(assert("ผู้ใช้ (ถ้า login แล้ว) มาจาก google.com", !user || (user.providerData||[]).some(p=>p.providerId==="google.com")));
-
-      testResults.innerHTML = results.map(r=>`<div>${r.pass? "✅ <span class='ok'>PASS</span>":"❌ <span class='ng'>FAIL</span>"} — ${r.name}</div>`).join("");
-      console.log("[Self-Tests]", results);
-    }
-    runTestsBtn.addEventListener("click", runTests);
   </script>
-
-  <!-- Firestore Rules (แนะนำ)
-  rules_version = '2';
-  service cloud.firestore {
-    match /databases/{database}/documents {
-      match /users/{uid} {
-        allow read, write: if request.auth != null && request.auth.uid == uid;
-        match /flights/{doc} { allow read, write: if request.auth != null && request.auth.uid == uid; }
-        match /airports/{doc} { allow read, write: if request.auth != null && request.auth.uid == uid; }
-      }
-    }
-  }
-  -->
 </body>
 </html>
