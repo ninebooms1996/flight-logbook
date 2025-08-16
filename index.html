@@ -8,11 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <title>Flight Logbook — Firebase + Google Login</title>
   <style>
-    :root{
-      --bg:#0b0f17;--fg:#e6eaf2;--muted:#9aa6b2;--card:#101826ee;
-      --accent:#7dd3fc;--accent2:#a78bfa;--border:#1f2a40;--input:#0f1624;
-      --radius:18px;--shadow:0 10px 30px rgba(0,0,0,.35)
-    }
+    :root{--bg:#0b0f17;--fg:#e6eaf2;--muted:#9aa6b2;--card:#101826ee;--accent:#7dd3fc;--accent2:#a78bfa;--border:#1f2a40;--input:#0f1624;--radius:18px;--shadow:0 10px 30px rgba(0,0,0,.35)}
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -25,17 +21,15 @@
       -webkit-tap-highlight-color:transparent
     }
     header{position:sticky;top:0;z-index:20;backdrop-filter:saturate(140%) blur(8px);
-      background:linear-gradient(180deg, rgba(10,14,22,.9), rgba(10,14,22,.7));
-      border-bottom:1px solid var(--border)}
+      background:linear-gradient(180deg, rgba(10,14,22,.9), rgba(10,14,22,.7)); border-bottom:1px solid var(--border)}
     .wrap{max-width:1200px;margin:0 auto;padding:12px 16px}
     .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
     .brand{display:flex;gap:10px;align-items:center}
     .brand h1{font-size:18px;margin:0}
-    .plane{width:26px;height:26px;flex:0 0 auto}
+    .plane{width:26px;height:26px}
     .spacer{flex:1}
     .avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border);display:none}
     .tag{padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px;background:#0e1422}
-
     .btn{border:1px solid var(--border);background:linear-gradient(180deg,#0f1624,#0b101b);color:var(--fg);
       padding:12px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:.15s;min-height:44px}
     .btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
@@ -43,10 +37,9 @@
     .btn.ghost{background:transparent}
 
     main{padding:16px 0 32px}
-    /* MOBILE FIRST */
+    /* mobile-first */
     .grid{display:grid;grid-template-columns:1fr;gap:16px}
     .stats{display:grid;grid-template-columns:1fr;gap:12px}
-    /* Desktop ขยายเมื่อจอกว้าง */
     @media (min-width:900px){.stats{grid-template-columns:repeat(3,1fr)}}
     @media (min-width:1000px){.grid{grid-template-columns:1.25fr 1fr}}
 
@@ -60,17 +53,13 @@
 
     .field{flex:1;display:flex;flex-direction:column;gap:6px;min-width:160px}
     .field label{font-size:13px;color:var(--muted)}
-    .field input,.field select,.field textarea{
-      background:var(--input);color:var(--fg);border:1px solid var(--border);
-      border-radius:12px;padding:12px;outline:none;min-height:44px;font-size:16px
-    }
+    .field input,.field select,.field textarea{background:var(--input);color:var(--fg);border:1px solid var(--border);border-radius:12px;padding:12px;outline:none;min-height:44px;font-size:16px}
     .field textarea{min-height:88px}
     .field input[type="number"]{appearance:textfield}
     .field input::-webkit-outer-spin-button,.field input::-webkit-inner-spin-button{appearance:none;margin:0}
     .hint{font-size:12px;color:var(--muted)}
     .right{text-align:right}
 
-    /* ตารางเลื่อนบนจอเล็ก */
     .tableWrap{overflow:auto;-webkit-overflow-scrolling:touch}
     table{width:100%;border-collapse:separate;border-spacing:0 10px;min-width:760px}
     thead th{font-size:12px;color:var(--muted);text-align:left;padding:0 10px}
@@ -80,16 +69,12 @@
     tbody tr td:last-child{border-right:1px solid var(--border);border-top-right-radius:12px;border-bottom-right-radius:12px}
     tr.flash{background:#0b3a2a!important}
 
-    /* Searchbar แบบเดิม-เรียบ */
-    .simple-input{
-      background:var(--input);color:var(--fg);border:1px solid var(--border);
-      border-radius:12px;padding:10px 12px;min-height:44px;font-size:16px
-    }
-    .searchbar{position:relative;flex:1;min-width:240px;display:flex;align-items:center;gap:8px}
-    .searchbar input{flex:1}
+    /* search/date inputs แบบเรียบ */
+    .simple-input{background:var(--input);color:var(--fg);border:1px solid var(--border);border-radius:12px;padding:10px 12px;min-height:44px;font-size:16px}
+    .searchbar{display:flex;gap:8px;align-items:center;flex:1;min-width:240px}
     #searchBar.has-text #clearSearch{display:inline-flex!important}
 
-    /* แสดงผลเป็นตัวใหญ่ */
+    /* บังคับแสดงตัวใหญ่ */
     .uc{text-transform:uppercase}
 
     .footer{opacity:.7;font-size:12px;text-align:center;padding:20px}
@@ -116,7 +101,7 @@
   </header>
 
   <main class="wrap">
-    <!-- สถิติ (ไม่มี Night/IFR) -->
+    <!-- Stats -->
     <section class="row stats">
       <div class="stat"><div class="lbl">ชั่วโมงรวม (Block/Air)</div><div class="val" id="statTotal">0:00</div></div>
       <div class="stat"><div class="lbl">ชั่วโมง 30 วันล่าสุด</div><div class="val" id="stat30">0:00</div></div>
@@ -124,7 +109,7 @@
     </section>
 
     <div class="grid">
-      <!-- ฟอร์ม -->
+      <!-- Form -->
       <section class="card" id="formCard">
         <div class="hd"><strong>บันทึกเที่ยวบิน</strong></div>
         <div class="bd">
@@ -167,21 +152,20 @@
         </div>
       </section>
 
-      <!-- รายการ (ส่วนล่างแบบเดิม) -->
+      <!-- List -->
       <section class="card" id="listCard">
         <div class="hd">
           <strong>รายการบันทึก</strong>
           <div class="row" style="align-items:center; gap:10px; flex-wrap:wrap">
             <div id="searchBar" class="searchbar">
-              <input id="searchBox" class="simple-input" type="search"
-                     placeholder="ค้นหา: Flight / Route / Reg / หมายเหตุ">
+              <input id="searchBox" class="simple-input" type="search" placeholder="ค้นหา: Flight / Route / Reg / หมายเหตุ">
               <button id="clearSearch" class="btn ghost" type="button" style="display:none">ล้าง</button>
             </div>
             <input class="simple-input" type="date" id="fromDate" title="จากวันที่">
             <input class="simple-input" type="date" id="toDate"   title="ถึงวันที่">
             <button class="btn ghost" id="filterBtn" type="button">กรอง</button>
             <div class="spacer"></div>
-            <span class="chip badge" id="syncBadge">สถานะ: พร้อมซิงก์</span>
+            <span class="tag" id="syncBadge">สถานะ: พร้อมซิงก์</span>
             <button class="btn" id="exportBtn" type="button">Export CSV</button>
             <button class="btn" id="printBtn"  type="button">พิมพ์</button>
           </div>
@@ -212,50 +196,54 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import {
-      getAuth,onAuthStateChanged,GoogleAuthProvider,signInWithPopup,signInWithRedirect,getRedirectResult,signOut
+      getAuth, onAuthStateChanged, GoogleAuthProvider,
+      signInWithPopup, signInWithRedirect, getRedirectResult, signOut
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
     import {
-      initializeFirestore,persistentLocalCache,persistentMultipleTabManager,
-      collection,addDoc,doc,setDoc,deleteDoc,query,orderBy,onSnapshot,serverTimestamp
+      initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
+      collection, addDoc, doc, setDoc, deleteDoc, query, orderBy, onSnapshot, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    const firebaseConfig={
-      apiKey:"AIzaSyB-mqfAKi-qWowUgJXph-Z7qn9KQX31CbE",
-      authDomain:"flight-logbook-50b3a.firebaseapp.com",
-      projectId:"flight-logbook-50b3a",
-      storageBucket:"flight-logbook-50b3a.appspot.com",
+    // === Firebase Config ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyB-mqfAKi-qWowUgJXph-Z7qn9KQX31CbE",
+      authDomain: "flight-logbook-50b3a.firebaseapp.com",
+      projectId: "flight-logbook-50b3a",
+      storageBucket: "flight-logbook-50b3a.appspot.com",
     };
-    const app=initializeApp(firebaseConfig);
-    const db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
-    const auth=getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const db = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
+    const auth = getAuth(app);
+
+    // === DOM ===
     const $=id=>document.getElementById(id);
+    const uidTag=$("uidTag"), avatar=$("avatar"), googleBtn=$("googleLoginBtn"), signOutBtn=$("signOutBtn");
+    const depDate=$("depDate"), depTime=$("depTime"), arrDate=$("arrDate"), arrTime=$("arrTime");
+    const depOffset=$("depOffset"), arrOffset=$("arrOffset");
+    const airline=$("airline"), flightNo=$("flightNo"), aircraftType=$("aircraftType"), registration=$("registration");
+    const origin=$("origin"), destination=$("destination"), ldgDay=$("ldgDay"), ldgNight=$("ldgNight");
+    const remarks=$("remarks"), airTime=$("airTime"), logForm=$("logForm");
+    const rows=$("rows"), searchBox=$("searchBox"), fromDate=$("fromDate"), toDate=$("toDate");
+    const filterBtn=$("filterBtn"), exportBtn=$("exportBtn"), printBtn=$("printBtn");
+    const addDemoBtn=$("addDemoBtn"), resetBtn=$("resetBtn");
+    const searchBar=$("searchBar"), clearSearch=$("clearSearch"), syncBadge=$("syncBadge");
 
-    const uidTag=$("uidTag"),avatar=$("avatar"),googleBtn=$("googleLoginBtn"),signOutBtn=$("signOutBtn");
-    const depDate=$("depDate"),depTime=$("depTime"),arrDate=$("arrDate"),arrTime=$("arrTime");
-    const depOffset=$("depOffset"),arrOffset=$("arrOffset");
-    const airline=$("airline"),flightNo=$("flightNo"),aircraftType=$("aircraftType"),registration=$("registration");
-    const origin=$("origin"),destination=$("destination"),ldgDay=$("ldgDay"),ldgNight=$("ldgNight");
-    const remarks=$("remarks"),airTime=$("airTime"),logForm=$("logForm");
-    const rows=$("rows"),searchBox=$("searchBox"),fromDate=$("fromDate"),toDate=$("toDate");
-    const filterBtn=$("filterBtn"),exportBtn=$("exportBtn"),printBtn=$("printBtn");
-    const addDemoBtn=$("addDemoBtn"),resetBtn=$("resetBtn");
-    const searchBar=$("searchBar"),clearSearch=$("clearSearch"),syncBadge=$("syncBadge");
-    const flightsCol=()=>window.currentUID?collection(db,"users",window.currentUID,"flights"):null;
+    const flightsCol = () => window.currentUID ? collection(db, "users", window.currentUID, "flights") : null;
 
-    // Helpers
-    const pad=n=>n.toString().padStart(2,"0");
-    const minutesToHHMM=m=>`${Math.floor(m/60)}:${pad(m%60)}`;
-    const parseHHMM=s=>{if(!s)return 0;const[h,m]=(s+"").split(":");return(+h||0)*60+(+m||0)};
-    const parseOffsetToMin=off=>{const m=/^([+-])(\d{2}):(\d{2})$/.exec(off||"");if(!m)return 0;const sign=m[1]==="-"?-1:1;return sign*(+m[2]*60+ +m[3])};
-    const utcMsFromLocal=(d,t,off)=>Date.UTC(...((()=>{const[Y,M,D]=d.split("-").map(Number);const[hh,mm]=t.split(":").map(Number);return[Y,(M||1)-1,D||1,hh||0,mm||0,0]})()))-parseOffsetToMin(off)*60000;
-    const minutesBetween=()=>{if(!depDate.value||!depTime.value||!arrDate.value||!arrTime.value)return 0;let dep=utcMsFromLocal(depDate.value,depTime.value,depOffset.value),arr=utcMsFromLocal(arrDate.value,arrTime.value,arrOffset.value);let diff=arr-dep;if(diff<0)diff+=7*24*60*60*1000;return Math.round(diff/60000)};
-    function fillOffsets(){const list=[-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,5.75,6,6.5,7,8,8.75,9,9.5,10,10.5,11,12,12.75,13,14];const fmt=v=>`${v>=0?"+":"-"}${pad(Math.floor(Math.abs(v)))}:${pad(Math.round((Math.abs(v)%1)*60))}`;const opt=list.map(v=>`<option ${v===7?"selected":""}>${fmt(v)}</option>`).join("");depOffset.innerHTML=opt;arrOffset.innerHTML=opt}
-    function setToday(){const iso=new Date().toISOString().slice(0,10);depDate.value=iso;arrDate.value=iso;depTime.value="09:00";arrTime.value="10:30"}
-    function autoAdjustArrivalDate(){if(!depDate.value||!depTime.value||!arrTime.value||!depOffset.value||!arrOffset.value)return;const addDays=(iso,k)=>{const dt=new Date(iso+"T00:00:00Z");dt.setUTCDate(dt.getUTCDate()+k);return dt.toISOString().slice(0,10)};const cand=[-1,0,1,2].map(k=>addDays(depDate.value,k));const depUTC=utcMsFromLocal(depDate.value,depTime.value,depOffset.value);let best=null,bd=Infinity;for(const iso of cand){const arrUTC=utcMsFromLocal(iso,arrTime.value,arrOffset.value);const diff=arrUTC-depUTC;if(diff>=0&&diff<=30*60*60*1000&&diff<bd){bd=diff;best=iso}}if(best)arrDate.value=best;airTime.value=minutesToHHMM(minutesBetween())}
-    ["depDate","depTime","depOffset","arrTime","arrOffset"].forEach(id=>{const el=$(id);el.addEventListener("input",autoAdjustArrivalDate);el.addEventListener("change",autoAdjustArrivalDate)});
+    // === Helpers ===
+    const pad = n => n.toString().padStart(2,"0");
+    const minutesToHHMM = m => `${Math.floor(m/60)}:${pad(m%60)}`;
+    const parseHHMM = s => { if(!s) return 0; const [h,m]=(s+"").split(":"); return (+h||0)*60 + (+m||0); };
+    const parseOffsetToMin = off => { const m=/^([+-])(\d{2}):(\d{2})$/.exec(off||""); if(!m) return 0; const sign=m[1]==="-"?-1:1; return sign*(+m[2]*60 + +m[3]); };
+    const utcMsFromLocal = (d,t,off)=> Date.UTC(...((()=>{const [Y,M,D]=d.split("-").map(Number);const[hh,mm]=t.split(":").map(Number);return [Y,(M||1)-1,D||1,hh||0,mm||0,0];})())) - parseOffsetToMin(off)*60000;
+    const minutesBetween=()=>{ if(!depDate.value||!depTime.value||!arrDate.value||!arrTime.value) return 0; let dep=utcMsFromLocal(depDate.value,depTime.value,depOffset.value), arr=utcMsFromLocal(arrDate.value,arrTime.value,arrOffset.value); let diff=arr-dep; if(diff<0) diff+=7*24*60*60*1000; return Math.round(diff/60000); };
+    function fillOffsets(){ const list=[-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,5.75,6,6.5,7,8,8.75,9,9.5,10,10.5,11,12,12.75,13,14]; const fmt=v=>`${v>=0?"+":"-"}${pad(Math.floor(Math.abs(v)))}:${pad(Math.round((Math.abs(v)%1)*60))}`; const opt=list.map(v=>`<option ${v===7?"selected":""}>${fmt(v)}</option>`).join(""); depOffset.innerHTML=opt; arrOffset.innerHTML=opt; }
+    function setToday(){ const iso=new Date().toISOString().slice(0,10); depDate.value=iso; arrDate.value=iso; depTime.value="09:00"; arrTime.value="10:30"; }
+    function autoAdjustArrivalDate(){ if(!depDate.value||!depTime.value||!arrTime.value||!depOffset.value||!arrOffset.value) return; const addDays=(iso,k)=>{const dt=new Date(iso+"T00:00:00Z");dt.setUTCDate(dt.getUTCDate()+k);return dt.toISOString().slice(0,10)}; const cand=[-1,0,1,2].map(k=>addDays(depDate.value,k)); const depUTC=utcMsFromLocal(depDate.value,depTime.value,depOffset.value); let best=null,bd=Infinity; for(const iso of cand){const arrUTC=utcMsFromLocal(iso,arrTime.value,arrOffset.value); const diff=arrUTC-depUTC; if(diff>=0&&diff<=30*60*60*1000&&diff<bd){bd=diff;best=iso}} if(best) arrDate.value=best; airTime.value=minutesToHHMM(minutesBetween()); }
+    ["depDate","depTime","depOffset","arrTime","arrOffset"].forEach(id=>{const el=$(id); el.addEventListener("input",autoAdjustArrivalDate); el.addEventListener("change",autoAdjustArrivalDate);});
 
-    // Uppercase live
-    function bindUppercaseLive(){
+    // Uppercase live (ตอนพิมพ์/วาง)
+    (function bindUppercaseLive(){
       document.querySelectorAll('input.uc, textarea.uc').forEach(el=>{
         el.setAttribute('autocapitalize','characters');
         el.addEventListener('input',()=>{
@@ -263,70 +251,96 @@
           if(el.value!==up){el.value=up;if(s!=null&&e!=null)el.setSelectionRange(s,e);}
         });
       });
+    })();
+
+    // === Auth (popup → redirect อัตโนมัติ) ===
+    const provider = new GoogleAuthProvider(); provider.setCustomParameters({prompt:"select_account"});
+    const isInAppBrowser = () => /line\/|fbav|instagram|twitter|micromessenger|wechat|okhttp/i.test(navigator.userAgent);
+    async function tryPopupThenRedirect(){
+      if(isInAppBrowser()) return await signInWithRedirect(auth, provider);
+      try{ await signInWithPopup(auth, provider); }
+      catch(e){
+        const code=e?.code||"";
+        if(code==="auth/popup-blocked" || code==="auth/operation-not-supported-in-this-environment" || /popup|blocked|unsupported/i.test(e?.message||"")){
+          await signInWithRedirect(auth, provider);
+        } else { throw e; }
+      }
     }
+    function handleAuthError(e){
+      const code=e?.code||"";
+      if(code==="auth/unauthorized-domain"){
+        alert(`Sign-in failed: unauthorized-domain
+แก้ไขที่ Firebase Console → Authentication → Settings → Authorized domains
+เพิ่มโดเมนโปรเจกต์ เช่น:
+- flight-logbook-six.vercel.app
+- โดเมนจริงของคุณ (ถ้ามี)
+จากนั้นลองใหม่`);
+      }else if(code!=="auth/popup-closed-by-user"){
+        alert("Sign-in failed: "+code+" — "+(e?.message||e));
+        console.error(e);
+      }
+    }
+    googleBtn.addEventListener("click", async()=>{ try{ await tryPopupThenRedirect(); }catch(e){ handleAuthError(e); } });
+    signOutBtn.addEventListener("click", async()=>{ try{ await signOut(auth); }catch(e){ console.error(e); } });
+    getRedirectResult(auth).catch(handleAuthError);
 
-    // Auth
-    const provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:"select_account"});
-    googleBtn.addEventListener("click",async()=>{
-      try{await signInWithPopup(auth,provider).catch(async e=>{if(/popup/i.test(e?.message||""))await signInWithRedirect(auth,provider);else throw e;});}
-      catch(e){alert("Sign-in failed: "+(e?.message||e));}
-    });
-    signOutBtn.addEventListener("click",async()=>{try{await signOut(auth);}catch(e){console.error(e)}});
-    getRedirectResult(auth).catch(()=>{});
-
-    onAuthStateChanged(auth,(user)=>{
+    onAuthStateChanged(auth, (user)=>{
       if(user){
         window.currentUID=user.uid;
         uidTag.style.display="none";
         avatar.style.display=user.photoURL?"inline-block":"none"; if(user.photoURL) avatar.src=user.photoURL;
-        googleBtn.style.display="none";signOutBtn.style.display="inline-block";
-        searchBox.value="";fromDate.value="";toDate.value="";searchBar.classList.remove("has-text");
+        googleBtn.style.display="none"; signOutBtn.style.display="inline-block";
+        searchBox.value=""; fromDate.value=""; toDate.value=""; searchBar.classList.remove("has-text");
         subscribeFlights();
       }else{
         window.currentUID=null;
-        uidTag.textContent="Signed out";uidTag.style.display="inline-block";
-        avatar.style.display="none";googleBtn.style.display="inline-block";signOutBtn.style.display="none";
-        rows.innerHTML="";setStats(0,0,0);
+        uidTag.textContent="Signed out"; uidTag.style.display="inline-block";
+        avatar.style.display="none"; googleBtn.style.display="inline-block"; signOutBtn.style.display="none";
+        rows.innerHTML=""; setStats(0,0,0);
       }
     });
 
-    // Searchbar
-    function debounce(fn,ms=180){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
-    const onSearch=debounce(()=>{searchBar.classList.toggle("has-text",!!searchBox.value.trim());renderRows(cache)},120);
+    // Searchbar behaviors
+    const debounce=(fn,ms=180)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
+    const onSearch = debounce(()=>{ searchBar.classList.toggle("has-text", !!searchBox.value.trim()); renderRows(cache); }, 120);
     searchBox.addEventListener("input",onSearch);
-    clearSearch.addEventListener("click",()=>{searchBox.value="";searchBar.classList.remove("has-text");renderRows(cache);searchBox.focus()});
+    clearSearch.addEventListener("click",()=>{ searchBox.value=""; searchBar.classList.remove("has-text"); renderRows(cache); searchBox.focus(); });
     filterBtn.addEventListener("click",()=>renderRows(cache));
 
     // Stats
-    function setStats(total,count,last30){$("statTotal").textContent=minutesToHHMM(total);$("statCount").textContent=String(count);$("stat30").textContent=minutesToHHMM(last30)}
+    function setStats(total,count,last30){ $("statTotal").textContent=minutesToHHMM(total); $("statCount").textContent=String(count); $("stat30").textContent=minutesToHHMM(last30); }
 
-    // List
-    let unsub=null,cache=[];
-    const flightsCol=()=>window.currentUID?collection(db,"users",window.currentUID,"flights"):null;
+    // List subscribe + render (มี fallback ถ้า index ยังไม่สร้าง)
+    let unsub=null, cache=[];
     function listenWithQuery(qy){
-      if(unsub){try{unsub()}catch{};unsub=null}
-      unsub=onSnapshot(qy,{includeMetadataChanges:true},snap=>{
-        const pending=snap.metadata.hasPendingWrites,fromCache=snap.metadata.fromCache;
-        syncBadge.textContent=pending?"สถานะ: กำลังอัปโหลด...":(fromCache&&!navigator.onLine?"สถานะ: ออฟไลน์ (แคช)":"สถานะ: พร้อมซิงก์");
-        cache=[];snap.forEach(d=>cache.push({id:d.id,...d.data()}));renderRows(cache);
-      },err=>{
-        if(err?.code==='failed-precondition'){const col=flightsCol();if(!col)return;listenWithQuery(query(col,orderBy('depDate','desc')));}
-        else console.error("Snapshot error:",err);
+      if(unsub){ try{unsub()}catch{}; unsub=null; }
+      unsub = onSnapshot(qy, {includeMetadataChanges:true}, snap=>{
+        const pending=snap.metadata.hasPendingWrites, fromCache=snap.metadata.fromCache;
+        syncBadge.textContent = pending ? "สถานะ: กำลังอัปโหลด..." : (fromCache && !navigator.onLine ? "สถานะ: ออฟไลน์ (แคช)" : "สถานะ: พร้อมซิงก์");
+        cache=[]; snap.forEach(d=>cache.push({id:d.id, ...d.data()}));
+        renderRows(cache);
+      }, err=>{
+        if(err?.code==='failed-precondition'){ // ต้องมี composite index
+          const col=flightsCol(); if(!col) return;
+          listenWithQuery(query(col, orderBy('depDate','desc'))); // fallback ใช้ index เดี่ยว
+        } else {
+          console.error("Snapshot error:", err);
+        }
       });
     }
-    function subscribeFlights(){const col=flightsCol();if(!col)return;listenWithQuery(query(col,orderBy('depDate','desc'),orderBy('depTime','desc')))}
+    function subscribeFlights(){ const col=flightsCol(); if(!col) return; listenWithQuery(query(col, orderBy('depDate','desc'), orderBy('depTime','desc'))); }
 
     function renderRows(list){
       const q=(searchBox.value||"").toLowerCase();
       const filtered=list.filter(x=>{
         const hay=[x.flightNo,x.route,x.registration,x.remarks,x.airline,x.aircraftType].join(" ").toLowerCase();
         let ok=hay.includes(q);
-        if(fromDate.value) ok=ok&&x.depDate>=fromDate.value;
-        if(toDate.value) ok=ok&&x.depDate<=toDate.value;
+        if(fromDate.value) ok = ok && x.depDate >= fromDate.value;
+        if(toDate.value)   ok = ok && x.depDate <= toDate.value;
         return ok;
       });
 
-      rows.innerHTML=filtered.map(x=>`
+      rows.innerHTML = filtered.map(x=>`
         <tr data-id="${x.id}" class="${x.id===window._justAdded?'flash':''}">
           <td>${x.depDate}</td>
           <td><strong>${x.flightNo||""}</strong><div class="hint">${x.airline||""}</div></td>
@@ -339,72 +353,83 @@
           </td>
         </tr>`).join("");
 
-      if(window._justAdded){setTimeout(()=>{rows.querySelector(`tr[data-id="${window._justAdded}"]`)?.classList.remove("flash");window._justAdded=null},1200)}
+      if(window._justAdded){ setTimeout(()=>{ rows.querySelector(`tr[data-id="${window._justAdded}"]`)?.classList.remove("flash"); window._justAdded=null; }, 1200); }
 
-      const sumTotal=filtered.reduce((a,x)=>a+parseHHMM(x.airTime||"0:00"),0);
-      const today=new Date().toISOString().slice(0,10);
-      const d30=new Date(Date.now()-29*86400000).toISOString().slice(0,10);
-      const last30=list.filter(x=>x.depDate>=d30&&x.depDate<=today).reduce((s,x)=>s+parseHHMM(x.airTime||"0:00"),0);
-      setStats(sumTotal,filtered.length,last30);
+      const sumTotal = filtered.reduce((a,x)=> a+parseHHMM(x.airTime||"0:00"), 0);
+      const today = new Date().toISOString().slice(0,10);
+      const d30 = new Date(Date.now()-29*86400000).toISOString().slice(0,10);
+      const last30 = list.filter(x=>x.depDate>=d30 && x.depDate<=today).reduce((s,x)=> s+parseHHMM(x.airTime||"0:00"), 0);
+      setStats(sumTotal, filtered.length, last30);
     }
 
     // CRUD
-    window.deleteFlight=async function(id){
-      if(!confirm("ลบรายการนี้ใช่ไหม?"))return;
-      if(!window.currentUID)return alert("กรุณา Login ด้วย Google ก่อน");
-      const idx=cache.findIndex(i=>i.id===id);if(idx===-1)return;
-      const backup=cache[idx];cache.splice(idx,1);renderRows(cache);
-      try{await deleteDoc(doc(db,"users",window.currentUID,"flights",id))}
-      catch(e){cache.splice(idx,0,backup);renderRows(cache);alert("ลบไม่สำเร็จ: "+(e?.message||e))}
+    window.deleteFlight = async function(id){
+      if(!confirm("ลบรายการนี้ใช่ไหม?")) return;
+      if(!window.currentUID) return alert("กรุณา Login ด้วย Google ก่อน");
+      const idx = cache.findIndex(i=>i.id===id); if(idx===-1) return;
+      const backup = cache[idx];
+      cache.splice(idx,1); renderRows(cache); // optimistic
+      try{ await deleteDoc(doc(db,"users",window.currentUID,"flights",id)); }
+      catch(e){ cache.splice(idx,0,backup); renderRows(cache); alert("ลบไม่สำเร็จ: "+(e?.message||e)); }
     };
-    window.editFlight=function(id){
-      const x=cache.find(i=>i.id===id);if(!x)return;
-      depDate.value=x.depDate;depTime.value=x.depTime;arrDate.value=x.arrDate;arrTime.value=x.arrTime;
-      depOffset.value=x.depOffset||"+07:00";arrOffset.value=x.arrOffset||"+07:00";
-      airline.value=x.airline||"";flightNo.value=x.flightNo||"";aircraftType.value=x.aircraftType||"";registration.value=x.registration||"";
-      origin.value=x.origin||"";destination.value=x.destination||"";ldgDay.value=x.ldgDay||0;ldgNight.value=x.ldgNight||0;
-      remarks.value=x.remarks||"";airTime.value=x.airTime||"0:00";
+    window.editFlight = function(id){
+      const x=cache.find(i=>i.id===id); if(!x) return;
+      depDate.value=x.depDate; depTime.value=x.depTime; arrDate.value=x.arrDate; arrTime.value=x.arrTime;
+      depOffset.value=x.depOffset||"+07:00"; arrOffset.value=x.arrOffset||"+07:00";
+      airline.value=x.airline||""; flightNo.value=x.flightNo||""; aircraftType.value=x.aircraftType||""; registration.value=x.registration||"";
+      origin.value=x.origin||""; destination.value=x.destination||""; ldgDay.value=x.ldgDay||0; ldgNight.value=x.ldgNight||0;
+      remarks.value=x.remarks||""; airTime.value=x.airTime||"0:00";
       ['airline','flightNo','aircraftType','registration','origin','destination'].forEach(i=>$(i).dispatchEvent(new Event('input')));
-      window._editing=id;window.scrollTo({top:0,behavior:"smooth"});
+      window._editing=id; window.scrollTo({top:0,behavior:"smooth"});
     };
 
-    const UP=s=>(s||"").trim().toUpperCase();
-    logForm.addEventListener("submit",async e=>{
+    const UP = s => (s||"").trim().toUpperCase();
+    logForm.addEventListener("submit", async (e)=>{
       e.preventDefault();
-      if(!window.currentUID)return alert("กรุณา Login ด้วย Google ก่อน");
-      if(!airTime.value)airTime.value=minutesToHHMM(minutesBetween());
-      const data={
-        depDate:depDate.value,depTime:depTime.value,depOffset:depOffset.value,
-        arrDate:arrDate.value,arrTime:arrTime.value,arrOffset:arrOffset.value,
-        airline:UP(airline.value),flightNo:UP(flightNo.value),
-        aircraftType:UP(aircraftType.value),registration:UP(registration.value),
-        origin:UP(origin.value),destination:UP(destination.value),
+      if(!window.currentUID) return alert("กรุณา Login ด้วย Google ก่อน");
+      if(!airTime.value) airTime.value = minutesToHHMM(minutesBetween());
+      const data = {
+        depDate:depDate.value, depTime:depTime.value, depOffset:depOffset.value,
+        arrDate:arrDate.value, arrTime:arrTime.value, arrOffset:arrOffset.value,
+        airline:UP(airline.value), flightNo:UP(flightNo.value), aircraftType:UP(aircraftType.value), registration:UP(registration.value),
+        origin:UP(origin.value), destination:UP(destination.value),
         route:`${UP((origin.value||'').split(' – ')[0]||origin.value)} → ${UP((destination.value||'').split(' – ')[0]||destination.value)}`,
-        ldgDay:Number(ldgDay.value||0),ldgNight:Number(ldgNight.value||0),
-        crewRole:"PIC",remarks:(remarks.value||"").trim(),
-        airTime:airTime.value||"0:00",createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+        ldgDay:Number(ldgDay.value||0), ldgNight:Number(ldgNight.value||0),
+        crewRole:"PIC",
+        remarks:(remarks.value||"").trim(),
+        airTime:airTime.value||"0:00",
+        createdAt:serverTimestamp(), updatedAt:serverTimestamp()
       };
-      if(window._editing){await setDoc(doc(db,"users",window.currentUID,"flights",window._editing),data,{merge:true});window._editing=null}
-      else{const ref=await addDoc(collection(db,"users",window.currentUID,"flights"),data);window._justAdded=ref.id}
-      logForm.reset();setToday();autoAdjustArrivalDate();document.getElementById("listCard").scrollIntoView({behavior:"auto",block:"start"});
+      if(window._editing){
+        await setDoc(doc(db,"users",window.currentUID,"flights",window._editing), data, {merge:true});
+        window._editing=null;
+      }else{
+        const ref = await addDoc(collection(db,"users",window.currentUID,"flights"), data);
+        window._justAdded = ref.id;
+      }
+      logForm.reset(); setToday(); autoAdjustArrivalDate();
+      document.getElementById("listCard").scrollIntoView({behavior:"auto",block:"start"});
     });
 
-    // Export / Print
-    exportBtn.addEventListener("click",()=>{
+    // Export / Print / Demo / Reset
+    exportBtn.addEventListener("click", ()=>{
       const header=['depDate','depTime','depOffset','arrDate','arrTime','arrOffset','airline','flightNo','aircraftType','registration','origin','destination','route','airTime','crewRole','ldgDay','ldgNight','remarks'];
-      const lines=cache.map(x=>header.map(h=>(x[h]??'').toString().replace(/"/g,'""')).map(v=>`"${v}"`).join(","));
-      const blob=new Blob([header.join(",")+"\n"+lines.join("\n")],{type:"text/csv;charset=utf-8;"});const url=URL.createObjectURL(blob);
-      const a=document.createElement("a");a.href=url;a.download="flight-logbook.csv";a.click();URL.revokeObjectURL(url);
+      const lines=cache.map(x=> header.map(h=> (x[h]??'').toString().replace(/"/g,'""')).map(v=>`"${v}"`).join(","));
+      const blob=new Blob([header.join(",")+"\n"+lines.join("\n")],{type:"text/csv;charset=utf-8;"}); const url=URL.createObjectURL(blob);
+      const a=document.createElement("a"); a.href=url; a.download="flight-logbook.csv"; a.click(); URL.revokeObjectURL(url);
     });
     printBtn.addEventListener("click",()=>window.print());
+    resetBtn.addEventListener("click",()=>{ logForm.reset(); setToday(); autoAdjustArrivalDate(); });
+    addDemoBtn.addEventListener("click",()=>{ const iso=new Date().toISOString().slice(0,10);
+      depDate.value=iso; arrDate.value=iso; origin.value="BKK – SUVARNBHUMI"; destination.value="HKT – PHUKET";
+      airline.value="THA"; flightNo.value="TG201"; aircraftType.value="A320"; registration.value="HS-XXX";
+      depTime.value="09:05"; arrTime.value="10:35"; depOffset.value="+07:00"; arrOffset.value="+07:00";
+      autoAdjustArrivalDate(); ['airline','flightNo','aircraftType','registration','origin','destination'].forEach(i=>$(i).dispatchEvent(new Event('input'))); });
 
-    // Init
-    function init(){fillOffsets();setToday();autoAdjustArrivalDate();bindUppercaseLive()}
-    init();
-
-    // สถานะ online/offline
-    window.addEventListener("online",()=>syncBadge.textContent="สถานะ: พร้อมซิงก์");
-    window.addEventListener("offline",()=>syncBadge.textContent="สถานะ: ออฟไลน์ (แคช)");
+    // Init & status
+    (function init(){ fillOffsets(); setToday(); autoAdjustArrivalDate(); })();
+    window.addEventListener("online",  ()=> syncBadge.textContent="สถานะ: พร้อมซิงก์");
+    window.addEventListener("offline", ()=> syncBadge.textContent="สถานะ: ออฟไลน์ (แคช)");
   </script>
 </body>
 </html>
