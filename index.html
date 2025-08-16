@@ -8,144 +8,129 @@
 :root{
   --bg:#0b0f17;--fg:#e6eaf2;--muted:#9aa6b2;--border:#1f2a40;
   --card:#101826ee;--shadow:0 10px 30px rgba(0,0,0,.35);
-  --gradA:#7dd3fc;--gradB:#a78bfa;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0;color:var(--fg);
-  font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif;
   background:
-    radial-gradient(1200px 700px at 110% -10%, rgba(167,139,250,.18), transparent 40%),
+    radial-gradient(1100px 700px at 110% -10%, rgba(167,139,250,.18), transparent 40%),
     radial-gradient(1200px 800px at -10% -10%, rgba(125,211,252,.18), transparent 40%),
-    var(--bg);
+    #0a0e16;
 }
 
-/* ===== Header (โชว์ตอนล็อกอินแล้ว) ===== */
+/* language toggle */
+.lang-toggle{
+  position:fixed; top:10px; right:10px; z-index:50;
+  display:inline-flex; gap:6px; padding:4px;
+  border:1px solid var(--border); background:#0e1422; border-radius:999px
+}
+.lang-toggle button{
+  padding:6px 10px; border:none; background:transparent; color:var(--fg);
+  border-radius:999px; font-weight:700; font-size:12px; cursor:pointer
+}
+.lang-toggle button[aria-pressed="true"]{ background:#152036 }
+
+/* header (show after login) */
 header{
-  position:fixed; inset:0 0 auto 0; height:64px; z-index:20;
-  backdrop-filter: saturate(140%) blur(8px);
-  background: linear-gradient(180deg, rgba(10,14,22,.9), rgba(10,14,22,.65));
-  border-bottom:1px solid var(--border);
-  display:none;
+  position:fixed; inset:0 0 auto 0; height:64px; z-index:20; display:none;
+  backdrop-filter:saturate(140%) blur(8px);
+  background:linear-gradient(180deg,rgba(10,14,22,.9),rgba(10,14,22,.65));
+  border-bottom:1px solid var(--border)
 }
-.head-wrap{max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;gap:12px;align-items:center}
-.brand{
-  display:flex;align-items:center;gap:10px
-}
-.brand svg{width:26px;height:26px;flex:0 0 auto}
-.brand h1{
-  margin:0; font-size:18px; font-weight:800; letter-spacing:.08em; text-transform:uppercase
-}
-.header-ticker{
-  flex:1 1 420px; max-width:560px; min-width:320px; height:32px; overflow:hidden; margin-left:10px;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
-          mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
-}
-.ticker-track{display:inline-flex; gap:10px; white-space:nowrap; animation:marq 22s linear infinite}
-.header-ticker:hover .ticker-track{animation-play-state:paused}
+.head{max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{width:26px;height:26px}
+.brand h1{margin:0;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:18px}
+.header-ticker{flex:1 1 420px;max-width:560px;min-width:320px;height:32px;overflow:hidden;margin-left:10px;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 24px,#000 calc(100% - 24px),transparent 100%)}
+.ticker{display:inline-flex;gap:10px;white-space:nowrap;animation:marq 22s linear infinite}
+.header-ticker:hover .ticker{animation-play-state:paused}
 @keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media (max-width:780px){ .header-ticker{display:none} }
-.avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;border:1px solid var(--border);display:none}
+@media (max-width:780px){.header-ticker{display:none}}
+.avatar{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);object-fit:cover;display:none}
 .btn{border:1px solid var(--border);background:#0f1624;color:var(--fg);padding:10px 12px;border-radius:10px;cursor:pointer}
 
-/* ===== Login Screen (ทุกอย่างอยู่กลาง) ===== */
-.login-screen{
-  position:fixed; inset:0; z-index:30;
-  display:grid; place-items:center;
-  padding:24px 16px 84px; /* เผื่อที่ให้ ticker ล่างสุด */
+/* login screen (center all) */
+.login{position:fixed; inset:0; z-index:30; display:grid; place-items:center; padding:24px 16px}
+.center{
+  width:min(880px,96%); min-height:calc(100vh - 80px);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px
 }
-.center-col{
-  width:min(880px, 96%);
-  display:flex; flex-direction:column; align-items:center; gap:18px;
-}
-
-/* หัวข้อใหญ่ + ไอคอนเครื่องบิน */
-.login-brand{
+.title{
   display:inline-flex; align-items:center; gap:12px;
   padding:10px 16px; border:1px solid var(--border); border-radius:999px;
-  background:#0e1422; text-transform:uppercase; letter-spacing:.08em;
-  font-weight:800; font-size: clamp(20px, 6vw, 36px);
+  background:#0e1422; color:#e6eaf2; text-transform:uppercase; letter-spacing:.08em; font-weight:800;
+  font-size:clamp(20px,6vw,36px)
 }
-.login-brand svg{width:28px;height:28px}
-
-/* การ์ดภาพ */
-.hero{
-  width:min(700px, 96%);
-  border:1px solid var(--border); border-radius:22px; background:var(--card); box-shadow:var(--shadow);
-  padding:22px;
-}
-.hero svg{width:100%; height:auto}
-
-/* การ์ดล็อกอิน */
-.card{
-  width:min(700px, 96%);
-  border:1px solid var(--border); border-radius:22px; background:var(--card); box-shadow:var(--shadow);
-  padding:22px; display:flex; flex-direction:column; gap:10px
-}
-.card h2{margin:0 0 4px 0}
+.title svg{width:28px;height:28px}
+.hero,.card{width:min(700px,96%);margin:0 auto}
+.hero{border:1px solid var(--border);border-radius:22px;background:var(--card);box-shadow:var(--shadow);padding:22px}
+.hero svg{width:100%;height:auto}
+.card{border:1px solid var(--border);border-radius:22px;background:var(--card);box-shadow:var(--shadow);padding:22px;
+  display:flex;flex-direction:column;gap:10px;align-items:center}
+.card h2,.card .hint{text-align:center;width:100%}
 .gbtn{display:flex;align-items:center;gap:10px;justify-content:center;padding:12px 14px;border-radius:12px;background:#0f1624;border:1px solid var(--border);color:var(--fg);cursor:pointer}
 .gbtn img{width:18px;height:18px}
-.hint{font-size:12px;color:var(--muted)}
 
-/* ตัวเลื่อนสายการบินติดล่าง */
-.airline-footer{
-  position:fixed; left:50%; transform:translateX(-50%); bottom:16px; z-index:5;
-  width:min(920px, 92%); overflow:hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
-          mask-image: linear-gradient(90deg, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
-}
-.footer-track{display:inline-flex;gap:10px;white-space:nowrap;animation:marq 22s linear infinite}
-.air-chip{padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:#0e1422;color:#cbd5e1;font-size:12px}
-@media (max-width:980px){ .airline-footer{bottom:10px} }
+/* ticker under login card */
+.inline-ticker{width:min(700px,96%);margin:8px auto 0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%)}
+.inline-ticker .ticker{animation:marq 22s linear infinite}
+.chip{padding:6px 10px;border:1px solid var(--border);border-radius:999px;background:#0e1422;color:#cbd5e1;font-size:12px}
 
-/* ===== เนื้อหาหลังล็อกอิน (ตัวอย่าง placeholder) ===== */
-main{display:none; padding-top:72px}
-.main-wrap{max-width:1120px;margin:0 auto;padding:16px}
+/* after login placeholder */
+main{display:none;padding-top:72px}
+.wrap{max-width:1120px;margin:0 auto;padding:16px}
 .welcome{padding:14px;border:1px solid var(--border);border-radius:16px;background:#0f1624}
 </style>
 </head>
 <body>
 
-<!-- Header (โชว์เมื่อ login แล้ว) -->
-<header id="appHeader" aria-hidden="true">
-  <div class="head-wrap">
+<!-- language toggle -->
+<div class="lang-toggle" id="lang">
+  <button type="button" data-lang="th" aria-pressed="true">ไทย</button>
+  <button type="button" data-lang="en" aria-pressed="false">EN</button>
+</div>
+
+<!-- header (after login) -->
+<header id="hdr" aria-hidden="true">
+  <div class="head">
     <div class="brand">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <defs><linearGradient id="gH" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#7dd3fc"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>
-      <path d="M21 16.5l-8.5-3.4-4.1 4.1 1.2-5.6L3 9l18-6-6 18-2.6-6.6L21 16.5z" fill="url(#gH)"/></svg>
-      <h1>FLIGHT LOGBOOK</h1>
+        <path d="M21 16.5l-8.5-3.4-4.1 4.1 1.2-5.6L3 9l18-6-6 18-2.6-6.6L21 16.5z" fill="url(#gH)"/>
+      </svg>
+      <h1 id="brandTop">FLIGHT LOGBOOK</h1>
     </div>
 
     <div class="header-ticker">
-      <div class="ticker-track" id="tickerTop">
-        <span class="air-chip">THAI • TG/THA</span>
-        <span class="air-chip">NOK AIR • DD/NOK</span>
-        <span class="air-chip">BANGKOK AIRWAYS • PG/BKP</span>
-        <span class="air-chip">THAI AIRASIA • FD/AIQ</span>
-        <span class="air-chip">THAI VIETJET • VZ/TVJ</span>
-        <span class="air-chip">QATAR • QR/QTR</span>
-        <span class="air-chip">EMIRATES • EK/UAE</span>
-        <span class="air-chip">SINGAPORE • SQ/SIA</span>
-        <span class="air-chip">CATHAY • CX/CPA</span>
-        <span class="air-chip">ANA • NH/ANA</span>
+      <div class="ticker" id="topTicker">
+        <span class="chip">THAI • TG/THA</span><span class="chip">NOK AIR • DD/NOK</span>
+        <span class="chip">BANGKOK AIRWAYS • PG/BKP</span><span class="chip">THAI AIRASIA • FD/AIQ</span>
+        <span class="chip">THAI VIETJET • VZ/TVJ</span><span class="chip">QATAR • QR/QTR</span>
+        <span class="chip">EMIRATES • EK/UAE</span><span class="chip">SINGAPORE • SQ/SIA</span>
+        <span class="chip">CATHAY • CX/CPA</span><span class="chip">ANA • NH/ANA</span>
       </div>
     </div>
 
-    <img id="avatar" class="avatar" alt="">
-    <button id="signOutBtn" class="btn">Sign out</button>
+    <img id="ava" class="avatar" alt="">
+    <button id="signOut" class="btn" type="button">Sign out</button>
   </div>
 </header>
 
-<!-- Login Screen (ทุกอย่างอยู่กึ่งกลาง + ticker ล่าง) -->
-<section class="login-screen" id="loginScreen" aria-hidden="false">
-  <div class="center-col">
-    <div class="login-brand">
+<!-- login screen -->
+<section class="login" id="login">
+  <div class="center">
+    <div class="title">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <defs><linearGradient id="gL" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#7dd3fc"/><stop offset="1" stop-color="#a78bfa"/></linearGradient></defs>
         <path d="M21 16.5l-8.5-3.4-4.1 4.1 1.2-5.6L3 9l18-6-6 18-2.6-6.6L21 16.5z" fill="url(#gL)"/>
       </svg>
-      FLIGHT LOGBOOK
+      <span id="brandLogin">FLIGHT LOGBOOK</span>
     </div>
 
     <div class="hero">
@@ -161,40 +146,36 @@ main{display:none; padding-top:72px}
     </div>
 
     <div class="card">
-      <h2>เข้าสู่ระบบ</h2>
-      <div class="hint">ลงชื่อเข้าใช้ด้วย Google เพื่อเริ่มบันทึกเที่ยวบินของคุณ</div>
-      <button id="loginBtn" class="gbtn">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt=""> Sign in with Google
+      <h2 id="loginTitle">เข้าสู่ระบบ</h2>
+      <div class="hint" id="loginHint">ลงชื่อเข้าใช้ด้วย Google เพื่อเริ่มบันทึกเที่ยวบินของคุณ</div>
+      <button id="loginBtn" class="gbtn" type="button">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+        <span id="loginBtnText">ลงชื่อเข้าใช้ด้วย Google</span>
       </button>
     </div>
-  </div>
 
-  <!-- ตัวเลื่อนสายการบิน: ล่างสุด -->
-  <div class="airline-footer">
-    <div class="footer-track" id="tickerBottom">
-      <span class="air-chip">THAI • TG/THA</span>
-      <span class="air-chip">NOK AIR • DD/NOK</span>
-      <span class="air-chip">BANGKOK AIRWAYS • PG/BKP</span>
-      <span class="air-chip">THAI AIRASIA • FD/AIQ</span>
-      <span class="air-chip">THAI VIETJET • VZ/TVJ</span>
-      <span class="air-chip">QATAR • QR/QTR</span>
-      <span class="air-chip">EMIRATES • EK/UAE</span>
-      <span class="air-chip">SINGAPORE • SQ/SIA</span>
-      <span class="air-chip">CATHAY • CX/CPA</span>
-      <span class="air-chip">ANA • NH/ANA</span>
+    <!-- airline ticker below the card -->
+    <div class="inline-ticker">
+      <div class="ticker" id="btmTicker">
+        <span class="chip">THAI • TG/THA</span><span class="chip">NOK AIR • DD/NOK</span>
+        <span class="chip">BANGKOK AIRWAYS • PG/BKP</span><span class="chip">THAI AIRASIA • FD/AIQ</span>
+        <span class="chip">THAI VIETJET • VZ/TVJ</span><span class="chip">QATAR • QR/QTR</span>
+        <span class="chip">EMIRATES • EK/UAE</span><span class="chip">SINGAPORE • SQ/SIA</span>
+        <span class="chip">CATHAY • CX/CPA</span><span class="chip">ANA • NH/ANA</span>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Placeholder หลังล็อกอิน (คุณเอาเนื้อหาแอปจริงมาใส่แทนได้เลย) -->
-<main id="appMain">
-  <div class="main-wrap">
-    <div class="welcome" id="welcomeBox">ยินดีต้อนรับ</div>
+<!-- after login placeholder -->
+<main id="main">
+  <div class="wrap">
+    <div class="welcome" id="welcome">ยินดีต้อนรับ</div>
   </div>
 </main>
 
 <script type="module">
-/* ===== Firebase (ใช้ของโปรเจกต์คุณ) ===== */
+/* ==== Firebase (ของคุณ) ==== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 
@@ -208,64 +189,59 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider(); provider.setCustomParameters({prompt:"select_account"});
 
-/* ===== DOM ===== */
-const $ = id => document.getElementById(id);
-const loginScreen = $("loginScreen");
-const appHeader = $("appHeader");
-const appMain = $("appMain");
-const loginBtn = $("loginBtn");
-const signOutBtn = $("signOutBtn");
-const avatar = $("avatar");
-const welcomeBox = $("welcomeBox");
-
-/* ===== Login / Logout ===== */
-async function doLogin(){
-  try {
-    await signInWithPopup(auth, provider).catch(async err=>{
-      if(/popup/i.test(err?.message||"")) await signInWithRedirect(auth, provider);
-      else throw err;
-    });
-  } catch (e) { alert("Sign-in failed: " + (e?.message||e)); }
+/* ==== i18n (TH/EN) ==== */
+const t = {
+  th:{ brand:"FLIGHT LOGBOOK", login_title:"เข้าสู่ระบบ", login_hint:"ลงชื่อเข้าใช้ด้วย Google เพื่อเริ่มบันทึกเที่ยวบินของคุณ", login_btn:"ลงชื่อเข้าใช้ด้วย Google", sign_out:"ออกจากระบบ", welcome:(n)=>`ยินดีต้อนรับ, ${n||"นักบิน"}` },
+  en:{ brand:"FLIGHT LOGBOOK", login_title:"Sign in",     login_hint:"Sign in with Google to start logging your flights.",          login_btn:"Sign in with Google",          sign_out:"Sign out",     welcome:(n)=>`Welcome, ${n||"Pilot"}` }
+};
+const $=id=>document.getElementById(id);
+const langBox=$("lang"); let LANG=localStorage.getItem("lang") || ((navigator.language||"").toLowerCase().startsWith("th")?"th":"en");
+function applyLang(){
+  const L=t[LANG]||t.en;
+  $("brandTop").textContent=L.brand; $("brandLogin").textContent=L.brand;
+  $("loginTitle").textContent=L.login_title; $("loginHint").textContent=L.login_hint; $("loginBtnText").textContent=L.login_btn;
+  $("signOut").textContent=L.sign_out; $("welcome").textContent=L.welcome(auth.currentUser?.displayName);
+  [...langBox.querySelectorAll("button")].forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===LANG)));
+  document.documentElement.lang=LANG;
 }
-loginBtn.addEventListener("click", doLogin);
-signOutBtn.addEventListener("click", ()=>signOut(auth).catch(()=>{}));
+langBox.addEventListener("click",e=>{const b=e.target.closest("button[data-lang]"); if(!b)return; LANG=b.dataset.lang==="th"?"th":"en"; localStorage.setItem("lang",LANG); applyLang();});
+
+/* ==== login/out ==== */
+const login=$("login"), hdr=$("hdr"), main=$("main"), loginBtn=$("loginBtn"), signOutBtn=$("signOut"), ava=$("ava");
+async function doLogin(){
+  try{
+    await signInWithPopup(auth,provider).catch(async err=>{ if(/popup/i.test(err?.message||"")) await signInWithRedirect(auth,provider); else throw err; });
+  }catch(e){ alert((LANG==="th"?"เข้าสู่ระบบไม่สำเร็จ: ":"Sign-in failed: ")+(e?.message||e)); }
+}
+loginBtn.addEventListener("click",doLogin);
+signOutBtn.addEventListener("click",()=>signOut(auth).catch(()=>{}));
 getRedirectResult(auth).catch(()=>{});
 
-onAuthStateChanged(auth, user=>{
+onAuthStateChanged(auth,user=>{
   if(user){
-    // show app
-    appHeader.style.display="block";
-    appMain.style.display="block";
-    loginScreen.style.display="none";
-    if(user.photoURL){ avatar.src=user.photoURL; avatar.style.display="inline-block"; }
-    welcomeBox.textContent = `ยินดีต้อนรับ, ${user.displayName||"นักบิน"}`;
+    hdr.style.display="block"; main.style.display="block"; login.style.display="none";
+    if(user.photoURL){ ava.src=user.photoURL; ava.style.display="inline-block"; }
   }else{
-    // show login
-    appHeader.style.display="none";
-    appMain.style.display="none";
-    loginScreen.style.display="grid";
-    avatar.style.display="none";
+    hdr.style.display="none"; main.style.display="none"; login.style.display="grid"; ava.style.display="none";
   }
+  applyLang();
 });
 
-/* ===== ทำให้ ticker ลื่น “พอดี ๆ” และหยุดถ้าข้อความสั้น ===== */
-function initMarquee(trackId){
-  const el = document.getElementById(trackId); if(!el) return;
-  if(!el.dataset.dupe){ el.innerHTML += el.innerHTML; el.dataset.dupe="1"; }
-  const wrap = el.parentElement;
+/* ==== ticker (dup + autospeed; center if short) ==== */
+function initTicker(id){
+  const el=$(id); if(!el) return; const wrap=el.parentElement;
+  if(!el.dataset.dupe){ el.innerHTML+=el.innerHTML; el.dataset.dupe="1"; }
   requestAnimationFrame(()=>{
-    const contentW = el.scrollWidth/2, frameW = wrap.clientWidth||1;
-    if(contentW <= frameW-8){ el.style.animation="none"; wrap.style.display="flex"; wrap.style.justifyContent="center"; }
-    else{
-      wrap.style.display="block"; el.style.animationName="marq";
-      const ratio = Math.max(1, contentW/frameW);
-      const dur = Math.max(16, Math.min(28, ratio*12));
-      el.style.animationDuration = dur + "s";
-    }
+    const contentW=el.scrollWidth/2, frameW=wrap.clientWidth||1;
+    if(contentW<=frameW-8){ el.style.animation="none"; wrap.style.display="flex"; wrap.style.justifyContent="center"; }
+    else{ wrap.style.display="block"; el.style.animationName="marq"; const dur=Math.max(16,Math.min(28,(contentW/frameW)*12)); el.style.animationDuration=dur+"s"; }
   });
 }
-["tickerTop","tickerBottom"].forEach(initMarquee);
-addEventListener("resize", ()=>["tickerTop","tickerBottom"].forEach(initMarquee));
+["topTicker","btmTicker"].forEach(initTicker);
+addEventListener("resize",()=>["topTicker","btmTicker"].forEach(initTicker));
+
+/* init */
+applyLang();
 </script>
 </body>
 </html>
