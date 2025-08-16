@@ -3,9 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Flight Logbook — Firebase + Google Login</title>
   <style>
-    :root{--bg:#0b0f17;--fg:#e6eaf2;--muted:#9aa6b2;--card:#101826ee;--accent:#7dd3fc;--accent2:#a78bfa;--border:#1f2a40;--input:#0f1624;--radius:18px;--shadow:0 10px 30px rgba(0,0,0,.35)}
+    :root{
+      --bg:#0b0f17;--fg:#e6eaf2;--muted:#9aa6b2;--card:#101826ee;
+      --accent:#7dd3fc;--accent2:#a78bfa;--border:#1f2a40;--input:#0f1624;
+      --radius:18px;--shadow:0 10px 30px rgba(0,0,0,.35)
+    }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -18,8 +25,9 @@
       -webkit-tap-highlight-color:transparent
     }
     header{position:sticky;top:0;z-index:20;backdrop-filter:saturate(140%) blur(8px);
-      background:linear-gradient(180deg, rgba(10,14,22,.9), rgba(10,14,22,.7)); border-bottom:1px solid var(--border)}
-    .wrap{max-width:1200px;margin:0 auto;padding:16px}
+      background:linear-gradient(180deg, rgba(10,14,22,.9), rgba(10,14,22,.7));
+      border-bottom:1px solid var(--border)}
+    .wrap{max-width:1200px;margin:0 auto;padding:12px 16px}
     .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
     .brand{display:flex;gap:10px;align-items:center}
     .brand h1{font-size:18px;margin:0}
@@ -29,34 +37,40 @@
     .tag{padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px;background:#0e1422}
 
     .btn{border:1px solid var(--border);background:linear-gradient(180deg,#0f1624,#0b101b);color:var(--fg);
-      padding:12px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:.15s;min-height:44px;touch-action:manipulation}
+      padding:12px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:.15s;min-height:44px}
     .btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
     .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0a0e16;border:none}
     .btn.ghost{background:transparent}
 
-    main{padding:20px 0 40px}
-    .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
-    @media (max-width:1000px){.grid{grid-template-columns:1fr}}
+    main{padding:16px 0 32px}
+    /* MOBILE FIRST */
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    .stats{display:grid;grid-template-columns:1fr;gap:12px}
+    /* Desktop ขยายเมื่อจอกว้าง */
+    @media (min-width:900px){.stats{grid-template-columns:repeat(3,1fr)}}
+    @media (min-width:1000px){.grid{grid-template-columns:1.25fr 1fr}}
+
     .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
     .card .hd{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)}
     .card .bd{padding:16px}
 
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    @media (max-width:900px){.stats{grid-template-columns:1fr}}
     .stat{padding:14px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
     .stat .lbl{font-size:12px;color:var(--muted)}
     .stat .val{font-size:22px;font-weight:700;margin-top:6px}
 
     .field{flex:1;display:flex;flex-direction:column;gap:6px;min-width:160px}
     .field label{font-size:13px;color:var(--muted)}
-    .field input,.field select,.field textarea{background:var(--input);color:var(--fg);border:1px solid var(--border);
-      border-radius:12px;padding:12px;outline:none;min-height:44px;font-size:16px}
+    .field input,.field select,.field textarea{
+      background:var(--input);color:var(--fg);border:1px solid var(--border);
+      border-radius:12px;padding:12px;outline:none;min-height:44px;font-size:16px
+    }
     .field textarea{min-height:88px}
     .field input[type="number"]{appearance:textfield}
     .field input::-webkit-outer-spin-button,.field input::-webkit-inner-spin-button{appearance:none;margin:0}
     .hint{font-size:12px;color:var(--muted)}
     .right{text-align:right}
 
+    /* ตารางเลื่อนบนจอเล็ก */
     .tableWrap{overflow:auto;-webkit-overflow-scrolling:touch}
     table{width:100%;border-collapse:separate;border-spacing:0 10px;min-width:760px}
     thead th{font-size:12px;color:var(--muted);text-align:left;padding:0 10px}
@@ -66,23 +80,14 @@
     tbody tr td:last-child{border-right:1px solid var(--border);border-top-right-radius:12px;border-bottom-right-radius:12px}
     tr.flash{background:#0b3a2a!important}
 
-    .chips{display:flex;gap:6px;flex-wrap:wrap}
-    .chip{background:#111827;color:#cbd5e1;padding:6px 10px;border-radius:999px;border:1px solid var(--border);font-size:12px}
-    .chip.badge{display:inline-flex;align-items:center;gap:6px}
-
-    /* Searchbar */
-    .tools{gap:10px;align-items:center}
-    .searchwrap{display:flex;gap:10px;align-items:center;flex:1;min-width:280px;flex-wrap:wrap}
-    .searchbar{position:relative;flex:1;min-width:260px}
-    .searchbar .search-input{
-      width:100%;padding:12px 40px;border-radius:14px;background:linear-gradient(180deg,#0c1322,#0a0f1a);
-      color:var(--fg);border:1px solid var(--border);outline:none;transition:.18s;box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);min-height:44px;font-size:16px}
-    .searchbar .search-input::placeholder{color:#9aa6b2}
-    .searchbar .search-input:focus{border-color:transparent;box-shadow:0 0 0 2px rgba(125,211,252,.35),0 8px 30px rgba(0,0,0,.25)}
-    .searchbar .icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;opacity:.7;pointer-events:none}
-    .searchbar .clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:1px solid var(--border);background:#0f1624;color:#cbd5e1;
-      width:28px;height:28px;border-radius:999px;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:16px;line-height:1}
-    .searchbar.has-text .clear{display:flex}
+    /* Searchbar แบบเดิม-เรียบ */
+    .simple-input{
+      background:var(--input);color:var(--fg);border:1px solid var(--border);
+      border-radius:12px;padding:10px 12px;min-height:44px;font-size:16px
+    }
+    .searchbar{position:relative;flex:1;min-width:240px;display:flex;align-items:center;gap:8px}
+    .searchbar input{flex:1}
+    #searchBar.has-text #clearSearch{display:inline-flex!important}
 
     /* แสดงผลเป็นตัวใหญ่ */
     .uc{text-transform:uppercase}
@@ -104,14 +109,14 @@
       </div>
 
       <div class="spacer"></div>
-      <!-- ลบ Import/Seed ออกแล้ว เหลือเฉพาะปุ่มหลัก -->
-      <button class="btn" id="googleLoginBtn" type="button" title="Sign in with Google">Google Login</button>
+      <button class="btn" id="googleLoginBtn" type="button">Google Login</button>
       <button class="btn" id="signOutBtn" type="button" style="display:none">Sign out</button>
       <button class="btn primary" id="addDemoBtn" type="button">Quick Demo Flight</button>
     </div>
   </header>
 
   <main class="wrap">
+    <!-- สถิติ (ไม่มี Night/IFR) -->
     <section class="row stats">
       <div class="stat"><div class="lbl">ชั่วโมงรวม (Block/Air)</div><div class="val" id="statTotal">0:00</div></div>
       <div class="stat"><div class="lbl">ชั่วโมง 30 วันล่าสุด</div><div class="val" id="stat30">0:00</div></div>
@@ -141,8 +146,8 @@
               <div class="field"><label>ทะเบียน</label><input id="registration" class="uc" autocapitalize="characters" placeholder="HS-XXX" inputmode="latin-name"></div>
             </div>
             <div class="row">
-              <div class="field"><label>ต้นทาง</label><input id="origin" class="uc" autocapitalize="characters" placeholder="BKK – Suvarnabhumi" inputmode="latin-name"></div>
-              <div class="field"><label>ปลายทาง</label><input id="destination" class="uc" autocapitalize="characters" placeholder="HKT – Phuket" inputmode="latin-name"></div>
+              <div class="field"><label>ต้นทาง</label><input id="origin" class="uc" autocapitalize="characters" placeholder="BKK – SUVARNBHUMI" inputmode="latin-name"></div>
+              <div class="field"><label>ปลายทาง</label><input id="destination" class="uc" autocapitalize="characters" placeholder="HKT – PHUKET" inputmode="latin-name"></div>
               <div class="field"><label>Landings (Day/Night)</label>
                 <div class="row" style="align-items:center">
                   <input type="number" id="ldgDay" min="0" value="1" inputmode="numeric" style="max-width:120px">
@@ -162,41 +167,26 @@
         </div>
       </section>
 
-      <!-- รายการ -->
+      <!-- รายการ (ส่วนล่างแบบเดิม) -->
       <section class="card" id="listCard">
         <div class="hd">
           <strong>รายการบันทึก</strong>
-          <div class="row tools">
-            <div class="searchwrap">
-              <div class="searchbar" id="searchBar">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="11" cy="11" r="7" stroke="#9aa6b2" stroke-width="2"/>
-                  <path d="M20 20l-3.5-3.5" stroke="#9aa6b2" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                <input id="searchBox" class="search-input" type="search" placeholder="ค้นหา: Flight / Route / Reg / หมายเหตุ">
-                <button id="clearSearch" class="clear" aria-label="ล้างการค้นหา">&times;</button>
-              </div>
-              <div class="input-chip" title="จากวันที่">
-                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="#9aa6b2"/><path d="M8 3v4M16 3v4M3 9h18" stroke="#9aa6b2"/></svg>
-                <input type="date" id="fromDate">
-              </div>
-              <div class="input-chip" title="ถึงวันที่">
-                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="#9aa6b2"/><path d="M8 3v4M16 3v4M3 9h18" stroke="#9aa6b2"/></svg>
-                <input type="date" id="toDate">
-              </div>
-              <button class="btn ghost" id="filterBtn" type="button">กรอง</button>
+          <div class="row" style="align-items:center; gap:10px; flex-wrap:wrap">
+            <div id="searchBar" class="searchbar">
+              <input id="searchBox" class="simple-input" type="search"
+                     placeholder="ค้นหา: Flight / Route / Reg / หมายเหตุ">
+              <button id="clearSearch" class="btn ghost" type="button" style="display:none">ล้าง</button>
             </div>
+            <input class="simple-input" type="date" id="fromDate" title="จากวันที่">
+            <input class="simple-input" type="date" id="toDate"   title="ถึงวันที่">
+            <button class="btn ghost" id="filterBtn" type="button">กรอง</button>
             <div class="spacer"></div>
             <span class="chip badge" id="syncBadge">สถานะ: พร้อมซิงก์</span>
             <button class="btn" id="exportBtn" type="button">Export CSV</button>
-            <button class="btn" id="printBtn" type="button">พิมพ์</button>
+            <button class="btn" id="printBtn"  type="button">พิมพ์</button>
           </div>
         </div>
         <div class="bd">
-          <div class="chips" style="margin-bottom:10px">
-            <span class="chip">Realtime Sync</span>
-            <span class="chip">Offline-first</span>
-          </div>
           <div class="tableWrap">
             <table>
               <thead>
@@ -238,8 +228,8 @@
     const app=initializeApp(firebaseConfig);
     const db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
     const auth=getAuth(app);
-
     const $=id=>document.getElementById(id);
+
     const uidTag=$("uidTag"),avatar=$("avatar"),googleBtn=$("googleLoginBtn"),signOutBtn=$("signOutBtn");
     const depDate=$("depDate"),depTime=$("depTime"),arrDate=$("arrDate"),arrTime=$("arrTime");
     const depOffset=$("depOffset"),arrOffset=$("arrOffset");
@@ -261,7 +251,7 @@
     const minutesBetween=()=>{if(!depDate.value||!depTime.value||!arrDate.value||!arrTime.value)return 0;let dep=utcMsFromLocal(depDate.value,depTime.value,depOffset.value),arr=utcMsFromLocal(arrDate.value,arrTime.value,arrOffset.value);let diff=arr-dep;if(diff<0)diff+=7*24*60*60*1000;return Math.round(diff/60000)};
     function fillOffsets(){const list=[-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,5.75,6,6.5,7,8,8.75,9,9.5,10,10.5,11,12,12.75,13,14];const fmt=v=>`${v>=0?"+":"-"}${pad(Math.floor(Math.abs(v)))}:${pad(Math.round((Math.abs(v)%1)*60))}`;const opt=list.map(v=>`<option ${v===7?"selected":""}>${fmt(v)}</option>`).join("");depOffset.innerHTML=opt;arrOffset.innerHTML=opt}
     function setToday(){const iso=new Date().toISOString().slice(0,10);depDate.value=iso;arrDate.value=iso;depTime.value="09:00";arrTime.value="10:30"}
-    function autoAdjustArrivalDate(){if(!depDate.value||!depTime.value||!arrTime.value||!depOffset.value||!arrOffset.value)return;const toISO=d=>d.toISOString().slice(0,10);const addDays=(iso,k)=>{const dt=new Date(iso+"T00:00:00Z");dt.setUTCDate(dt.getUTCDate()+k);return toISO(dt)};const cand=[-1,0,1,2].map(k=>addDays(depDate.value,k));const depUTC=utcMsFromLocal(depDate.value,depTime.value,depOffset.value);let best=null,bd=Infinity;for(const iso of cand){const arrUTC=utcMsFromLocal(iso,arrTime.value,arrOffset.value);const diff=arrUTC-depUTC;if(diff>=0&&diff<=30*60*60*1000&&diff<bd){bd=diff;best=iso}}if(best)arrDate.value=best;airTime.value=minutesToHHMM(minutesBetween())}
+    function autoAdjustArrivalDate(){if(!depDate.value||!depTime.value||!arrTime.value||!depOffset.value||!arrOffset.value)return;const addDays=(iso,k)=>{const dt=new Date(iso+"T00:00:00Z");dt.setUTCDate(dt.getUTCDate()+k);return dt.toISOString().slice(0,10)};const cand=[-1,0,1,2].map(k=>addDays(depDate.value,k));const depUTC=utcMsFromLocal(depDate.value,depTime.value,depOffset.value);let best=null,bd=Infinity;for(const iso of cand){const arrUTC=utcMsFromLocal(iso,arrTime.value,arrOffset.value);const diff=arrUTC-depUTC;if(diff>=0&&diff<=30*60*60*1000&&diff<bd){bd=diff;best=iso}}if(best)arrDate.value=best;airTime.value=minutesToHHMM(minutesBetween())}
     ["depDate","depTime","depOffset","arrTime","arrOffset"].forEach(id=>{const el=$(id);el.addEventListener("input",autoAdjustArrivalDate);el.addEventListener("change",autoAdjustArrivalDate)});
 
     // Uppercase live
@@ -312,6 +302,7 @@
 
     // List
     let unsub=null,cache=[];
+    const flightsCol=()=>window.currentUID?collection(db,"users",window.currentUID,"flights"):null;
     function listenWithQuery(qy){
       if(unsub){try{unsub()}catch{};unsub=null}
       unsub=onSnapshot(qy,{includeMetadataChanges:true},snap=>{
@@ -373,7 +364,6 @@
       airline.value=x.airline||"";flightNo.value=x.flightNo||"";aircraftType.value=x.aircraftType||"";registration.value=x.registration||"";
       origin.value=x.origin||"";destination.value=x.destination||"";ldgDay.value=x.ldgDay||0;ldgNight.value=x.ldgNight||0;
       remarks.value=x.remarks||"";airTime.value=x.airTime||"0:00";
-      // กระตุ้นให้เป็นตัวใหญ่
       ['airline','flightNo','aircraftType','registration','origin','destination'].forEach(i=>$(i).dispatchEvent(new Event('input')));
       window._editing=id;window.scrollTo({top:0,behavior:"smooth"});
     };
@@ -391,9 +381,8 @@
         origin:UP(origin.value),destination:UP(destination.value),
         route:`${UP((origin.value||'').split(' – ')[0]||origin.value)} → ${UP((destination.value||'').split(' – ')[0]||destination.value)}`,
         ldgDay:Number(ldgDay.value||0),ldgNight:Number(ldgNight.value||0),
-        crewRole:"PIC",
-        remarks:(remarks.value||"").trim(),airTime:airTime.value||"0:00",
-        createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+        crewRole:"PIC",remarks:(remarks.value||"").trim(),
+        airTime:airTime.value||"0:00",createdAt:serverTimestamp(),updatedAt:serverTimestamp()
       };
       if(window._editing){await setDoc(doc(db,"users",window.currentUID,"flights",window._editing),data,{merge:true});window._editing=null}
       else{const ref=await addDoc(collection(db,"users",window.currentUID,"flights"),data);window._justAdded=ref.id}
@@ -409,13 +398,11 @@
     });
     printBtn.addEventListener("click",()=>window.print());
 
-    // Reset / Demo
-    resetBtn.addEventListener("click",()=>{logForm.reset();setToday();autoAdjustArrivalDate()});
-    addDemoBtn.addEventListener("click",()=>{const iso=new Date().toISOString().slice(0,10);depDate.value=iso;arrDate.value=iso;origin.value="BKK – Suvarnabhumi Airport";destination.value="HKT – Phuket International Airport";airline.value="THA";flightNo.value="TG201";aircraftType.value="A320";registration.value="HS-XXX";depTime.value="09:05";arrTime.value="10:35";depOffset.value="+07:00";arrOffset.value="+07:00";autoAdjustArrivalDate();['airline','flightNo','aircraftType','registration','origin','destination'].forEach(i=>$(i).dispatchEvent(new Event('input')));});
-
     // Init
     function init(){fillOffsets();setToday();autoAdjustArrivalDate();bindUppercaseLive()}
     init();
+
+    // สถานะ online/offline
     window.addEventListener("online",()=>syncBadge.textContent="สถานะ: พร้อมซิงก์");
     window.addEventListener("offline",()=>syncBadge.textContent="สถานะ: ออฟไลน์ (แคช)");
   </script>
