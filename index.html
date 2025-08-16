@@ -4,15 +4,31 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>FLIGHT LOGBOOK</title>
-<style>
-:root{--bg:#0b0f17;--fg:#e6eaf2;--muted:#9aa6b2;--border:#1f2a40;--card:#101826ee;--shadow:0 10px 30px rgba(0,0,0,.35)}
-*{box-sizing:border-box} html,body{height:100%}
-body{margin:0;color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif;
-  background:radial-gradient(1100px 700px at 110% -10%,rgba(167,139,250,.18),transparent 40%),
-             radial-gradient(1200px 800px at -10% -10%,rgba(125,211,252,.18),transparent 40%),#0a0e16;
-  overflow-x:hidden;overflow-y:auto}
 
-/* --- Login: minimal, center --- */
+<!-- Favicon กัน 404 -->
+<link rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%88%EF%B8%8F%3C/text%3E%3C/svg%3E">
+
+<style>
+/* ===== Theme ===== */
+:root{
+  --bg:#0b0f17; --fg:#e6eaf2; --muted:#9aa6b2; --border:#1f2a40; --card:#101826ee;
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --container: 1200px;          /* ขนาดเว็บทั่วไป */
+  --gap-lg: 16px; --gap-md: 12px; --ctl-h: 44px; --radius: 14px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif;
+  background:
+    radial-gradient(1100px 700px at 110% -10%,rgba(167,139,250,.18),transparent 40%),
+    radial-gradient(1200px 800px at -10% -10%,rgba(125,211,252,.18),transparent 40%),
+    #0a0e16;
+  overflow-x:hidden;
+}
+
+/* ===== Login (minimal) ===== */
 .login{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:24px 16px}
 .login .box{width:min(520px,96%);display:flex;flex-direction:column;gap:18px;align-items:center}
 .title{display:inline-flex;align-items:center;gap:12px;padding:12px 18px;border:1px solid var(--border);border-radius:999px;
@@ -23,57 +39,84 @@ body{margin:0;color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Rob
 .gbtn{display:flex;align-items:center;gap:10px;justify-content:center;padding:12px 14px;border-radius:12px;background:#0f1624;border:1px solid var(--border);color:var(--fg);cursor:pointer;width:100%}
 .gbtn img{width:18px;height:18px}
 
-/* --- Header (PC) --- */
+/* ===== Header ===== */
 header{position:fixed;inset:0 0 auto 0;height:64px;z-index:20;display:none;
   backdrop-filter:saturate(140%) blur(8px);background:linear-gradient(180deg,rgba(10,14,22,.9),rgba(10,14,22,.65));border-bottom:1px solid var(--border)}
-.head{max-width:1200px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.head{max-width:var(--container);margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px}
 .brand{display:flex;align-items:center;gap:10px}
 .brand svg{width:26px;height:26px}
 .brand h1{margin:0;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:18px}
 .avatar{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);object-fit:cover;display:none}
 .btn{border:1px solid var(--border);background:#0f1624;color:var(--fg);padding:10px 12px;border-radius:10px;cursor:pointer}
 
-/* --- App (PC layout) --- */
-main{display:none;margin-top:64px;height:calc(100vh - 64px)}
-.mainwrap{height:100%;max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;flex-direction:column;gap:12px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+/* ===== App (PC layout) ===== */
+main{display:none;margin-top:64px;min-height:calc(100vh - 64px)}
+.mainwrap{max-width:var(--container);margin:0 auto;padding:16px 20px;display:flex;flex-direction:column;gap:var(--gap-lg)}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap-lg)}
 .stat{padding:14px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
 .stat .lbl{font-size:12px;color:var(--muted)} .stat .val{font-size:22px;font-weight:700;margin-top:6px}
 
-.grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+.grid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1.25fr 1fr;gap:var(--gap-lg)}
 .card2{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:0}
 .card2 .hd{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border)}
 .card2 .bd{padding:12px 14px;flex:1 1 auto;min-height:0;overflow:auto}
 
 .field{flex:1;display:flex;flex-direction:column;gap:6px;min-width:160px}
 .field label{font-size:13px;color:var(--muted)}
-.field input,.field select{background:#0f1624;color:var(--fg);border:1px solid var(--border);border-radius:12px;padding:12px;outline:none;min-height:44px;font-size:16px}
+.field input,.field select{background:#0f1624;color:var(--fg);border:1px solid var(--border);border-radius:12px;padding:12px;outline:none;min-height:var(--ctl-h);font-size:16px}
 .uc{text-transform:uppercase}
 .right{text-align:right}.hint{font-size:12px;color:var(--muted)}
 
+/* Search bar */
 .searchbar{position:relative;flex:1;min-width:260px}
 .searchbar input{width:100%;padding:12px 40px;border-radius:14px;background:linear-gradient(180deg,#0c1322,#0a0f1a);color:var(--fg);border:1px solid var(--border);min-height:44px}
 .searchbar .icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;opacity:.7;pointer-events:none}
 .searchbar .clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:1px solid var(--border);background:#0f1624;color:#cbd5e1;width:28px;height:28px;border-radius:999px;cursor:pointer;display:none;align-items:center;justify-content:center}
 .searchbar.has-text .clear{display:flex}
 
+/* Table */
 .tableWrap{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;position:relative}
-table{width:max-content;min-width:1100px;border-collapse:separate;border-spacing:0 10px}
+table{width:max-content;min-width:960px;border-collapse:separate;border-spacing:0 10px}
 thead th{font-size:12px;color:var(--muted);text-align:left;padding:0 10px;white-space:nowrap}
-tbody tr{background:#0f1624;border:1px solid var(--border)} tbody td{padding:12px 10px;white-space:nowrap;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+tbody tr{background:#0f1624;border:1px solid var(--border)}
+tbody td{padding:12px 10px;white-space:nowrap;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 tbody tr td:first-child{border-left:1px solid var(--border);border-top-left-radius:12px;border-bottom-left-radius:12px}
 tbody tr td:last-child{border-right:1px solid var(--border);border-top-right-radius:12px;border-bottom-right-radius:12px}
 td.exp{width:38px}
 .expbtn{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--border);background:#0f1624;color:#cbd5e1;border-radius:8px;cursor:pointer}
 .expbtn .mark::before{content:"►"} .expbtn[aria-expanded="true"] .mark::before{content:"▼"}
 .detailBox{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;padding:10px;white-space:normal}
+
 .pagination{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:10px}
 .pgbtn{min-height:36px;padding:8px 12px;border-radius:10px}
+
+/* ===== Breakpoints (เว็บทั่วไป) ===== */
+.head,.mainwrap{max-width:var(--container)}
+@media (min-width:1400px){ :root{--container:1280px} }
+@media (min-width:1200px) and (max-width:1399.98px){ :root{--container:1140px} }
+@media (min-width:992px) and (max-width:1199.98px){ :root{--container:960px} table{min-width:900px} }
+@media (max-width:991.98px){
+  .grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr);gap:var(--gap-md)}
+  table{min-width:840px}
+}
+@media (max-width:575.98px){
+  :root{--container:100%;--ctl-h:42px}
+  .head,.mainwrap{padding:12px}
+  .stats{grid-template-columns:1fr}
+  .stat .val{font-size:18px}
+  .card2 .hd{padding:10px 12px}
+  .card2 .bd{padding:10px 12px}
+  .field label{font-size:12px}
+  .field input,.field select{font-size:15px}
+  table{min-width:720px}
+}
 </style>
 </head>
 <body>
 
-<!-- Login (minimal) -->
+<!-- ===== Login (มินิมอล) ===== -->
 <section class="login" id="login">
   <div class="box">
     <div class="title">
@@ -92,7 +135,7 @@ td.exp{width:38px}
   </div>
 </section>
 
-<!-- Header -->
+<!-- ===== Header ===== -->
 <header id="hdr">
   <div class="head">
     <div class="brand">
@@ -108,7 +151,7 @@ td.exp{width:38px}
   </div>
 </header>
 
-<!-- App (PC) -->
+<!-- ===== App ===== -->
 <main id="main">
   <div class="mainwrap">
     <section class="stats">
@@ -118,6 +161,7 @@ td.exp{width:38px}
     </section>
 
     <div class="grid">
+      <!-- ฟอร์มซ้าย -->
       <section class="card2">
         <div class="hd"><strong>Flight Entry</strong></div>
         <div class="bd">
@@ -148,7 +192,12 @@ td.exp{width:38px}
                 </div>
               </div>
             </div>
-            <div id="editBanner" style="display:none;gap:10px;margin-top:10px"><span class="hint">Editing…</span><button type="button" class="btn" id="cancelEditBtn">Cancel</button></div>
+
+            <div id="editBanner" style="display:none;gap:10px;margin-top:10px">
+              <span class="hint">Editing…</span>
+              <button type="button" class="btn" id="cancelEditBtn">Cancel</button>
+            </div>
+
             <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:10px">
               <button type="button" class="btn" id="resetBtn">Reset</button>
               <button type="submit" class="btn" id="saveBtn">Save</button>
@@ -157,6 +206,7 @@ td.exp{width:38px}
         </div>
       </section>
 
+      <!-- รายการขวา -->
       <section class="card2" id="listCard">
         <div class="hd">
           <strong>Log Entries</strong>
@@ -171,6 +221,7 @@ td.exp{width:38px}
             <button class="btn" id="printBtn" type="button">Print</button>
           </div>
         </div>
+
         <div class="bd">
           <div class="tableWrap">
             <table>
@@ -192,7 +243,7 @@ td.exp{width:38px}
 </main>
 
 <script type="module">
-/* ===== Firebase ===== */
+/* ================= Firebase ================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, setPersistence, browserLocalPersistence,
@@ -205,20 +256,21 @@ import {
   query, orderBy, onSnapshot, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-/* ===== Config ===== */
+/* ---- Config ของคุณ ---- */
 const firebaseConfig = {
   apiKey: "AIzaSyB-mqfAKi-qWowUgJXph-Z7qn9KQX31CbE",
   authDomain: "flight-logbook-50b3a.firebaseapp.com",
   projectId: "flight-logbook-50b3a",
   storageBucket: "flight-logbook-50b3a.appspot.com",
 };
+
 const app = initializeApp(firebaseConfig);
 const db  = initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
 const auth = getAuth(app);
-await setPersistence(auth, browserLocalPersistence);  // keep session
+await setPersistence(auth, browserLocalPersistence);
 const provider = new GoogleAuthProvider(); provider.setCustomParameters({prompt:"select_account"});
 
-/* ===== DOM ===== */
+/* ================= DOM ================= */
 const $=id=>document.getElementById(id);
 const login=$("login"), hdr=$("hdr"), main=$("main"), loginBtn=$("loginBtn"), signOutBtn=$("signOut"), ava=$("ava");
 const depDate=$("depDate"), depTime=$("depTime"), arrDate=$("arrDate"), arrTime=$("arrTime"), depOffset=$("depOffset"), arrOffset=$("arrOffset");
@@ -229,7 +281,7 @@ const rows=$("rows"), searchBox=$("searchBox"), searchBar=$("searchBar"), clearS
 const exportBtn=$("exportBtn"), printBtn=$("printBtn"), syncBadge=$("syncBadge");
 const pager=$("pager"), prevPage=$("prevPage"), nextPage=$("nextPage"), pageInfo=$("pageInfo");
 
-/* ===== Utils (no duplicate names) ===== */
+/* ================= Utils ================= */
 const pad=n=>n.toString().padStart(2,"0");
 const toHHMM = m => `${Math.floor(m/60)}:${pad(m%60)}`;
 const parseHHMM = s => { if(!s) return 0; const [h,m]=(s+"").split(":"); return (+h||0)*60+(+m||0); };
@@ -239,45 +291,43 @@ const minutesBetween=()=>{ if(!depDate.value||!depTime.value||!arrDate.value||!a
 const toUC=s=>(s||"").trim().toUpperCase();
 const makeDebouncer=(fn,ms=180)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}}
 
-/* ===== Offsets + defaults ===== */
+/* offsets + defaults */
 function fillOffsets(){const list=[-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,5.75,6,6.5,7,8,8.75,9,9.5,10,10.5,11,12,12.75,13,14]; const fmt=v=>`${v>=0?"+":"-"}${pad(Math.floor(Math.abs(v)))}:${pad(Math.round((Math.abs(v)%1)*60))}`; const opt=list.map(v=>`<option ${v===7?"selected":""}>${fmt(v)}</option>`).join(""); depOffset.innerHTML=opt; arrOffset.innerHTML=opt; }
-function setToday(){const iso=new Date().toISOString().slice(0,10);depDate.value=iso;arrDate.value=iso;depTime.value="09:00";arrTime.value="10:30";depOffset.value="+07:00";arrOffset.value="+07:00";}
+function setToday(){const iso=new Date().toISOString().slice(0,10); depDate.value=iso; arrDate.value=iso; depTime.value="09:00"; arrTime.value="10:30"; depOffset.value="+07:00"; arrOffset.value="+07:00";}
 function autoAdjustArrivalDate(){if(!depDate.value||!depTime.value||!arrTime.value||!depOffset.value||!arrOffset.value)return;const toISO=d=>d.toISOString().slice(0,10);const addDays=(iso,k)=>{const dt=new Date(iso+"T00:00:00Z");dt.setUTCDate(dt.getUTCDate()+k);return toISO(dt)};const cand=[-1,0,1,2].map(k=>addDays(depDate.value,k));const depUTC=utcMsFromLocal(depDate.value,depTime.value,depOffset.value);let best=null,bd=Infinity;for(const iso of cand){const arrUTC=utcMsFromLocal(iso,arrTime.value,arrOffset.value);const diff=arrUTC-depUTC;if(diff>=0&&diff<=30*60*60*1000&&diff<bd){bd=diff;best=iso}}if(best)arrDate.value=best;}
 ["depDate","depTime","depOffset","arrTime","arrOffset","arrDate"].forEach(id=>{const el=$(id);el.addEventListener("input",autoAdjustArrivalDate);el.addEventListener("change",autoAdjustArrivalDate);});
 document.querySelectorAll('.uc').forEach(el=>{el.setAttribute('autocapitalize','characters');el.addEventListener('input',()=>{const s=el.selectionStart,e=el.selectionEnd,u=(el.value||"").toUpperCase();if(el.value!==u){el.value=u;if(s!=null&&e!=null)el.setSelectionRange(s,e);}});});
 
-/* ===== Auth with robust fallback ===== */
+/* ================= Auth ================= */
 async function doLogin(){
   try{
     const isMobile=/Mobi|Android/i.test(navigator.userAgent);
     if(isMobile) return await signInWithRedirect(auth,provider);
     await signInWithPopup(auth,provider);
   }catch(e){
-    // fallback redirect if popup blocked
-    await signInWithRedirect(auth,provider);
+    await signInWithRedirect(auth,provider);   // fallback เมื่อ popup ถูกบล็อก
   }
 }
 loginBtn.addEventListener("click",doLogin);
 signOutBtn.addEventListener("click",()=>signOut(auth).catch(()=>{}));
-getRedirectResult(auth).catch(()=>{}); // silence noisy promise from extensions
+getRedirectResult(auth).catch(()=>{}); // ปิดเสียง error จาก extension
 
 onAuthStateChanged(auth, async user=>{
   if(user){
     login.style.display="none"; hdr.style.display="block"; main.style.display="block";
     if(user.photoURL){ava.src=user.photoURL;ava.style.display="inline-block";}
-    await ensureProfile();
-    resetPaging(); subscribeFlights();
+    await ensureProfile(); resetPaging(); subscribeFlights();
   }else{
     hdr.style.display="none"; main.style.display="none"; login.style.display="flex"; ava.style.display="none";
     rows.innerHTML=""; setStats(0,0,0); cache=[]; totalPages=1; currentPage=1; updatePager();
   }
 });
 
-/* ===== Profile ===== */
+/* ================= Profile ================= */
 function userDoc(){return auth.currentUser?doc(db,"users",auth.currentUser.uid):null;}
 async function ensureProfile(){const ref=userDoc(); if(!ref)return; const s=await getDoc(ref); if(!s.exists()){await setDoc(ref,{createdAt:serverTimestamp()},{merge:true});}}
 
-/* ===== Firestore flights ===== */
+/* ================= Flights ================= */
 function flightsCol(){return auth.currentUser?collection(db,"users",auth.currentUser.uid,"flights"):null;}
 let unsub=null, cache=[]; let currentPage=1, totalPages=1; const PAGE=20;
 
@@ -382,6 +432,7 @@ logForm.addEventListener("submit",async e=>{
 cancelEditBtn.addEventListener("click",()=>{window._editing=null;editBanner.style.display='none'});
 resetBtn.addEventListener("click",()=>{logForm.reset();setToday();autoAdjustArrivalDate()});
 
+/* Export / Print */
 exportBtn.addEventListener("click",()=>{
   const header=['depDate','depTime','depOffset','arrDate','arrTime','arrOffset','airline','flightNo','aircraftType','registration','origin','destination','route','airTime','ldgDay','ldgNight'];
   const lines=cache.map(x=>header.map(h=>(x[h]??'').toString().replace(/"/g,'""')).map(v=>`"${v}"`).join(","));
@@ -390,13 +441,21 @@ exportBtn.addEventListener("click",()=>{
 });
 printBtn.addEventListener("click",()=>window.print());
 
+/* ===== Fit viewport height var(--vh) สำหรับมือถือ ===== */
+(function fitVH(){
+  const setVH = () => document.documentElement
+    .style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+  window.addEventListener('resize', setVH, {passive:true});
+  setVH();
+})();
+
+/* ปิดเสียง error จาก extension */
+addEventListener('unhandledrejection',ev=>{const r=ev.reason||{};if((r.stack||'').includes('chrome-extension://')||(r.message||'').includes('Cross-Origin-Opener-Policy'))ev.preventDefault()});
+addEventListener('error',ev=>{if(String(ev.filename).startsWith('chrome-extension://'))ev.preventDefault()});
+
 /* init */
 function init(){fillOffsets();setToday();autoAdjustArrivalDate()}
 init();
-
-/* silence noisy extension errors */
-addEventListener('unhandledrejection',ev=>{const r=ev.reason||{};if((r.stack||'').includes('chrome-extension://')||(r.message||'').includes('Cross-Origin-Opener-Policy'))ev.preventDefault()});
-addEventListener('error',ev=>{if(String(ev.filename).startsWith('chrome-extension://'))ev.preventDefault()});
 </script>
 </body>
 </html>
