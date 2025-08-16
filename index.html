@@ -16,21 +16,23 @@
         #0a0e16;
       font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif;
       -webkit-tap-highlight-color:transparent;
-      overflow:hidden; /* เลื่อนเฉพาะการ์ด */
+      overflow:hidden; /* หน้าไม่เลื่อน เลื่อนเฉพาะการ์ด */
     }
+
+    /* ---------- Header ---------- */
     header{
       position:fixed;top:0;left:0;right:0;z-index:20;
       backdrop-filter:saturate(140%) blur(8px);
       background:linear-gradient(180deg, rgba(10,14,22,.9), rgba(10,14,22,.7));
       border-bottom:1px solid var(--border)
     }
-    .wrap{max-width:1400px;margin:0 auto;padding:12px 16px}
+    .wrap{max-width:1200px;margin:0 auto;padding:12px 16px}
     .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
     .brand{display:flex;gap:10px;align-items:center}
     .brand h1{font-size:18px;margin:0}
     .plane{width:26px;height:26px;flex:0 0 auto}
     .spacer{flex:1}
-    .avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1px solid var(--border);display:none}
+    .avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;border:1px solid var(--border);display:none;cursor:pointer}
     .tag{padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px;background:#0e1422}
 
     .btn{border:1px solid var(--border);background:linear-gradient(180deg,#0f1624,#0b101b);color:var(--fg);
@@ -39,6 +41,7 @@
     .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0a0e16;border:none}
     .btn.ghost{background:transparent}
 
+    /* ---------- Main ---------- */
     main{
       height:calc(var(--appH,100vh) - var(--headerH,64px));
       display:flex;flex-direction:column;overflow:hidden;
@@ -47,44 +50,33 @@
     main .wrap{height:100%;display:flex;flex-direction:column}
 
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;flex:0 0 auto}
-    @media (max-width:1100px){.stats{grid-template-columns:1fr}}
+    @media (max-width:900px){.stats{grid-template-columns:1fr}}
     .stat{padding:14px;border:1px solid var(--border);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))}
     .stat .lbl{font-size:12px;color:var(--muted)}
     .stat .val{font-size:22px;font-weight:700;margin-top:6px}
 
-    /* === Layout 3 คอลัมน์: ฟอร์ม 2 คอลัมน์ + รายการ 1 คอลัมน์ === */
+    /* 2 คอลัมน์: ซ้ายฟอร์ม / ขวารายการ */
     .grid{
       flex:1 1 auto; min-height:0;
       display:grid;
-      grid-template-columns: 1fr 1fr 1.25fr;  /* ซ้าย/กลาง = ฟอร์ม, ขวา = รายการ */
+      grid-template-columns: 1.25fr 1fr;
       gap:16px;
     }
-    #formCard{ grid-column: 1 / span 2; }
-    #listCard{ grid-column: 3; }
 
     .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:0}
     .card .hd{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border);flex:0 0 auto}
     .card .bd{padding:12px 14px;flex:1 1 auto;min-height:0;overflow:auto}
 
-    /* ฟอร์มไม่เลื่อนภายในการ์ด (ให้พอดีด้วย spacing) */
-    #formCard .bd{overflow:visible}
-    .form2col{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px 16px;
-      align-content:start;
-    }
-
-    .field{display:flex;flex-direction:column;gap:6px}
+    .field{flex:1;display:flex;flex-direction:column;gap:6px;min-width:160px}
     .field label{font-size:13px;color:var(--muted)}
     .field input,.field select,.field textarea{background:var(--input);color:var(--fg);border:1px solid var(--border);
       border-radius:12px;padding:12px;outline:none;min-height:44px;font-size:16px}
     .field textarea{min-height:88px}
     .field input[type="number"]{appearance:textfield}
     .field input::-webkit-outer-spin-button,.field input::-webkit-inner-spin-button{appearance:none;margin:0}
-    .uc{text-transform:uppercase}
     .hint{font-size:12px;color:var(--muted)}
     .right{text-align:right}
+    .uc{text-transform:uppercase}
 
     .tools{gap:10px;align-items:center}
     .searchwrap{display:flex;gap:10px;align-items:center;flex:1;min-width:280px;flex-wrap:wrap}
@@ -93,7 +85,6 @@
       width:100%;padding:12px 40px;border-radius:14px;background:linear-gradient(180deg,#0c1322,#0a0f1a);
       color:var(--fg);border:1px solid var(--border);outline:none;transition:.18s;box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);min-height:44px;font-size:16px}
     .searchbar .search-input::placeholder{color:#9aa6b2}
-    .searchbar .search-input:focus{border-color:transparent;box-shadow:0 0 0 2px rgba(125,211,252,.35),0 8px 30px rgba(0,0,0,.25)}
     .searchbar .icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;opacity:.7;pointer-events:none}
     .searchbar .clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:1px solid var(--border);background:#0f1624;color:#cbd5e1;
       width:28px;height:28px;border-radius:999px;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:16px;line-height:1}
@@ -126,10 +117,55 @@
 
     .footer{opacity:.7;font-size:12px;text-align:center;padding:20px}
 
-    /* พิมพ์เฉพาะรายการบันทึก */
+    /* ---------- Login Screen (สวย ๆ) ---------- */
+    .login-screen{
+      position:fixed;inset:0;z-index:30;display:none;
+      background:
+        radial-gradient(1400px 800px at 10% -10%, rgba(125,211,252,.18), transparent 40%),
+        radial-gradient(1200px 700px at 110% 0%, rgba(167,139,250,.20), transparent 45%),
+        #0a0e16;
+    }
+    .login-wrap{
+      max-width:980px;margin:0 auto;padding:28px 16px;height:100%;
+      display:grid;grid-template-columns: 1.1fr 1fr;gap:28px;align-items:center;
+    }
+    .hero{
+      padding:24px;border:1px solid var(--border);border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+      box-shadow:var(--shadow);
+    }
+    .hero h1{margin:0 0 10px 0;font-size:34px}
+    .hero p{margin:0;color:#bfd3ea;line-height:1.6}
+    .hero svg{width:100%;height:auto;opacity:.95}
+
+    .login-card{
+      padding:22px;border:1px solid var(--border);border-radius:22px;background:var(--card);box-shadow:var(--shadow);
+      display:flex;flex-direction:column;gap:14px
+    }
+    .login-card h2{margin:0 0 6px 0}
+    .gbtn{display:flex;align-items:center;gap:10px;justify-content:center}
+    .gbtn img{width:18px;height:18px}
+    .hintline{font-size:12px;color:var(--muted)}
+    .login-field{display:flex;flex-direction:column;gap:6px}
+    .login-field input{background:var(--input);border:1px solid var(--border);border-radius:12px;color:var(--fg);padding:12px;min-height:44px;font-size:16px}
+
+    @media (max-width: 980px){
+      .login-wrap{grid-template-columns:1fr}
+      .hero{order:2}
+      .login-card{order:1}
+    }
+
+    /* ---------- Profile Modal ---------- */
+    .modal{position:fixed;inset:0;display:none;place-items:center;background:rgba(0,0,0,.5);z-index:40}
+    .modal .panel{width:min(520px,92%);background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px}
+    .modal .panel h3{margin:0 0 8px 0}
+    .modal .panel .grid2{display:grid;grid-template-columns:1fr 160px;gap:12px}
+    .modal .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:10px}
+    .err{color:#fecaca;font-size:12px;display:none}
+
+    /* ---------- Print ---------- */
     @media print{
       body{ background:#fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; overflow:visible }
-      header, .stats, #formCard, .footer, .tools, .chips { display:none !important; }
+      header, .stats, #formCard, .footer, .tools, .chips, .login-screen, .modal { display:none !important; }
       #listCard{ border:none; box-shadow:none; }
       #listCard .hd{ padding:0 0 8px 0; border:none; }
       #listCard .bd{ padding:0; }
@@ -137,17 +173,10 @@
       #listCard thead th, #listCard tbody td{ border:1px solid #000; padding:6px 8px !important; color:#000 !important; background:#fff !important; }
       #listCard th:last-child, #listCard td:last-child{ display:none !important; }
     }
-
-    /* มือถือ/จอเล็ก → เรียงเป็นคอลัมน์เดี่ยว */
-    @media (max-width:1100px){
-      .grid{ grid-template-columns: 1fr; }
-      #formCard{ grid-column: auto; }
-      #listCard{ grid-column: auto; }
-      .form2col{ grid-template-columns: 1fr; }
-    }
   </style>
 </head>
 <body>
+  <!-- Header -->
   <header>
     <div class="wrap row">
       <div class="brand">
@@ -157,7 +186,7 @@
         </svg>
         <h1>Flight Logbook</h1>
         <span class="tag" id="uidTag">Signed out</span>
-        <img id="avatar" class="avatar" alt="">
+        <img id="avatar" class="avatar" alt="" title="คลิกเพื่อแก้ไขโปรไฟล์">
       </div>
 
       <div class="spacer"></div>
@@ -167,7 +196,69 @@
     </div>
   </header>
 
-  <main>
+  <!-- Login Screen -->
+  <section class="login-screen" id="loginScreen" aria-hidden="true">
+    <div class="login-wrap">
+      <div class="hero">
+        <h1>บินให้สนุก — เก็บชั่วโมงให้เป๊ะ</h1>
+        <p>Flight Logbook ที่เบา เร็ว และซิงก์แบบเรียลไทม์ด้วย Firebase.<br>
+           ใช้งานได้ทั้งมือถือและคอม — ไม่มีปลั๊กอินหรือ API ภายนอกอื่น</p>
+        <div style="margin-top:18px">
+          <!-- เครื่องบินสวย ๆ -->
+          <svg viewBox="0 0 640 300" fill="none">
+            <defs>
+              <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#7dd3fc"/><stop offset="1" stop-color="#a78bfa"/>
+              </linearGradient>
+            </defs>
+            <path d="M40 240 C 140 210, 300 210, 600 240" stroke="url(#g2)" stroke-width="6" opacity=".25"/>
+            <g transform="translate(60,40)">
+              <path d="M0,80 L240,60 L250,70 L230,78 L100,92 L40,96 Z" fill="url(#g2)" opacity=".9"/>
+              <circle cx="210" cy="86" r="6" fill="#fff" opacity=".8"/>
+              <circle cx="180" cy="88" r="6" fill="#fff" opacity=".6"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="login-card">
+        <h2>เข้าสู่ระบบ</h2>
+        <p class="hintline">กรอกชื่อเล่น/อายุ (ใช้แสดงในโปรไฟล์) — สามารถแก้ไขได้ภายหลัง</p>
+        <div class="login-field">
+          <label>ชื่อเล่น</label>
+          <input id="preNick" placeholder="เช่น โอม / NINE" maxlength="24">
+        </div>
+        <div class="login-field">
+          <label>อายุ</label>
+          <input id="preAge" type="number" inputmode="numeric" min="1" max="120" placeholder="เช่น 24">
+        </div>
+        <button class="btn gbtn" id="loginBtn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+          Sign in with Google
+        </button>
+        <div class="hintline">เมื่อเข้าสู่ระบบครั้งแรก ระบบจะบันทึกชื่อเล่น/อายุไว้ในโปรไฟล์ของคุณ</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Profile Modal -->
+  <section class="modal" id="profileModal" aria-hidden="true">
+    <div class="panel">
+      <h3>โปรไฟล์ของฉัน</h3>
+      <div class="grid2">
+        <div class="field"><label>ชื่อเล่น</label><input id="nickName" maxlength="24" placeholder="ชื่อเล่น"></div>
+        <div class="field"><label>อายุ</label><input id="age" type="number" inputmode="numeric" min="1" max="120" placeholder="อายุ"></div>
+      </div>
+      <div id="profileErr" class="err">กรุณากรอกข้อมูลให้ถูกต้อง</div>
+      <div class="actions">
+        <button class="btn ghost" id="closeProfile">ยกเลิก</button>
+        <button class="btn primary" id="saveProfile">บันทึก</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main App -->
+  <main id="appMain" style="display:none">
     <div class="wrap">
       <section class="row stats">
         <div class="stat"><div class="lbl">ชั่วโมงรวม (Block/Air)</div><div class="val" id="statTotal">0:00</div></div>
@@ -176,48 +267,41 @@
       </section>
 
       <div class="grid">
-        <!-- ฟอร์ม (กิน 2 คอลัมน์) -->
+        <!-- ฟอร์ม -->
         <section class="card" id="formCard">
           <div class="hd"><strong>บันทึกเที่ยวบิน</strong></div>
           <div class="bd">
             <form id="logForm" autocomplete="off">
-              <div class="form2col">
-                <!-- ซ้าย -->
-                <div>
-                  <div class="field"><label>วันที่ (Dep)</label><input type="date" id="depDate" required></div>
-                  <div class="field"><label>เวลาออก (ท้องถิ่น)</label><input type="time" id="depTime" required step="60"></div>
-                  <div class="field"><label>UTC Offset ต้นทาง</label><select id="depOffset"></select></div>
-
-                  <div class="field"><label>สายการบิน</label><input id="airline" class="uc" autocapitalize="characters" placeholder="THA / TG" inputmode="latin-name"></div>
-                  <div class="field"><label>เที่ยวบิน</label><input id="flightNo" class="uc" autocapitalize="characters" placeholder="TG102" required inputmode="latin-prose"></div>
-                  <div class="field"><label>เครื่องบิน</label><input id="aircraftType" class="uc" autocapitalize="characters" placeholder="A320 / B738" inputmode="latin-name"></div>
-                  <div class="field"><label>ทะเบียน</label><input id="registration" class="uc" autocapitalize="characters" placeholder="HS-XXX" inputmode="latin-name"></div>
-                </div>
-
-                <!-- ขวา -->
-                <div>
-                  <div class="field"><label>วันที่ (Arr)</label><input type="date" id="arrDate" required></div>
-                  <div class="field"><label>เวลาถึง (ท้องถิ่น)</label><input type="time" id="arrTime" required step="60"></div>
-                  <div class="field"><label>UTC Offset ปลายทาง</label><select id="arrOffset"></select></div>
-
-                  <div class="field"><label>ต้นทาง</label><input id="origin" class="uc" autocapitalize="characters" placeholder="BKK – Suvarnabhumi" inputmode="latin-name"></div>
-                  <div class="field"><label>ปลายทาง</label><input id="destination" class="uc" autocapitalize="characters" placeholder="HKT – Phuket" inputmode="latin-name"></div>
-
-                  <div class="field"><label>Landings (Day/Night)</label>
-                    <div class="row" style="align-items:center">
-                      <input type="number" id="ldgDay" min="0" value="1" inputmode="numeric" style="max-width:120px">
-                      <input type="number" id="ldgNight" min="0" value="0" inputmode="numeric" style="max-width:120px">
-                    </div>
+              <div class="row">
+                <div class="field"><label>วันที่ (Dep)</label><input type="date" id="depDate" required></div>
+                <div class="field"><label>เวลาออก (ท้องถิ่น)</label><input type="time" id="depTime" required step="60"></div>
+                <div class="field"><label>UTC Offset ต้นทาง</label><select id="depOffset"></select></div>
+              </div>
+              <div class="row">
+                <div class="field"><label>วันที่ (Arr)</label><input type="date" id="arrDate" required></div>
+                <div class="field"><label>เวลาถึง (ท้องถิ่น)</label><input type="time" id="arrTime" required step="60"></div>
+                <div class="field"><label>UTC Offset ปลายทาง</label><select id="arrOffset"></select></div>
+              </div>
+              <div class="row">
+                <div class="field"><label>สายการบิน</label><input id="airline" class="uc" autocapitalize="characters" placeholder="THA / TG" inputmode="latin-name"></div>
+                <div class="field"><label>เที่ยวบิน</label><input id="flightNo" class="uc" autocapitalize="characters" placeholder="TG102" required inputmode="latin-prose"></div>
+                <div class="field"><label>เครื่องบิน</label><input id="aircraftType" class="uc" autocapitalize="characters" placeholder="A320 / B738" inputmode="latin-name"></div>
+                <div class="field"><label>ทะเบียน</label><input id="registration" class="uc" autocapitalize="characters" placeholder="HS-XXX" inputmode="latin-name"></div>
+              </div>
+              <div class="row">
+                <div class="field"><label>ต้นทาง</label><input id="origin" class="uc" autocapitalize="characters" placeholder="BKK – Suvarnabhumi" inputmode="latin-name"></div>
+                <div class="field"><label>ปลายทาง</label><input id="destination" class="uc" autocapitalize="characters" placeholder="HKT – Phuket" inputmode="latin-name"></div>
+                <div class="field"><label>Landings (Day/Night)</label>
+                  <div class="row" style="align-items:center">
+                    <input type="number" id="ldgDay" min="0" value="1" inputmode="numeric" style="max-width:120px">
+                    <input type="number" id="ldgNight" min="0" value="0" inputmode="numeric" style="max-width:120px">
                   </div>
-
-                  <div class="field"><label>หมายเหตุ</label>
-                    <textarea id="remarks" rows="2" placeholder="Routing, MEL, ATC, Fuel, Wx"></textarea>
-                  </div>
-
-                  <div class="field"><label>เวลาบิน (อัตโนมัติ)</label><input id="airTime" placeholder="0:00" readonly></div>
                 </div>
               </div>
-
+              <div class="row">
+                <div class="field" style="flex:2"><label>หมายเหตุ</label><textarea id="remarks" rows="2" placeholder="Routing, MEL, ATC, Fuel, Wx"></textarea></div>
+                <div class="field"><label>เวลาบิน (อัตโนมัติ)</label><input id="airTime" placeholder="0:00" readonly></div>
+              </div>
               <div class="row" style="justify-content:flex-end;margin-top:10px">
                 <button type="button" class="btn ghost" id="resetBtn">ล้างฟอร์ม</button>
                 <button type="submit" class="btn primary">บันทึก</button>
@@ -226,7 +310,7 @@
           </div>
         </section>
 
-        <!-- รายการ (คอลัมน์ขวา) -->
+        <!-- รายการ -->
         <section class="card" id="listCard">
           <div class="hd">
             <strong>รายการบันทึก</strong>
@@ -286,11 +370,11 @@
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
     import {
       initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
-      collection, addDoc, doc, setDoc, deleteDoc, query, orderBy, onSnapshot,
+      collection, addDoc, doc, setDoc, getDoc, deleteDoc, query, orderBy, onSnapshot,
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    // --- Firebase ---
+    // --- Firebase init ---
     const firebaseConfig = {
       apiKey: "AIzaSyB-mqfAKi-qWowUgJXph-Z7qn9KQX31CbE",
       authDomain: "flight-logbook-50b3a.firebaseapp.com",
@@ -298,27 +382,35 @@
       storageBucket: "flight-logbook-50b3a.appspot.com",
     };
     const app = initializeApp(firebaseConfig);
-    const db  = initializeFirestore(app, {
-      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
-    });
+    const db  = initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
     const auth = getAuth(app);
 
     // --- DOM ---
     const $=id=>document.getElementById(id);
     const uidTag=$("uidTag"), avatar=$("avatar"), googleBtn=$("googleLoginBtn"), signOutBtn=$("signOutBtn");
+    const loginScreen=$("loginScreen"), loginBtn=$("loginBtn"), preNick=$("preNick"), preAge=$("preAge");
+    const appMain=$("appMain");
+
+    // Profile modal
+    const profileModal=$("profileModal"), nickName=$("nickName"), age=$("age"), saveProfile=$("saveProfile"), closeProfile=$("closeProfile"), profileErr=$("profileErr");
+
+    // Form elements
     const depDate=$("depDate"), depTime=$("depTime"), arrDate=$("arrDate"), arrTime=$("arrTime");
     const depOffset=$("depOffset"), arrOffset=$("arrOffset");
     const airline=$("airline"), flightNo=$("flightNo"), aircraftType=$("aircraftType"), registration=$("registration");
     const origin=$("origin"), destination=$("destination"), ldgDay=$("ldgDay"), ldgNight=$("ldgNight");
     const remarks=$("remarks"), airTime=$("airTime"), logForm=$("logForm");
+
+    // List controls
     const rows=$("rows"), searchBox=$("searchBox"), fromDate=$("fromDate"), toDate=$("toDate");
     const filterBtn=$("filterBtn"), exportBtn=$("exportBtn"), printBtn=$("printBtn");
     const addDemoBtn=$("addDemoBtn"), resetBtn=$("resetBtn");
     const searchBar=$("searchBar"), clearSearch=$("clearSearch"), syncBadge=$("syncBadge");
 
     const flightsCol = () => window.currentUID ? collection(db,"users",window.currentUID,"flights") : null;
+    const userDoc    = () => window.currentUID ? doc(db,"users",window.currentUID) : null;
 
-    // --- Helpers ---
+    /* ---------- Helpers ---------- */
     const pad=n=>n.toString().padStart(2,"0");
     const minutesToHHMM = m => `${Math.floor(m/60)}:${pad(m%60)}`;
     const parseHHMM = s => { if(!s) return 0; const [h,m]=(s+"").split(":"); return (+h||0)*60+(+m||0); };
@@ -352,21 +444,43 @@
     window.addEventListener('orientationchange', setViewportVars);
     setViewportVars();
 
-    // --- Auth ---
+    /* ---------- Auth & Login Screen ---------- */
     const provider=new GoogleAuthProvider(); provider.setCustomParameters({prompt:"select_account"});
-    googleBtn.addEventListener("click", async ()=>{
-      try{ await signInWithPopup(auth, provider).catch(async e=>{ if(/popup/i.test(e?.message||"")) await signInWithRedirect(auth, provider); else throw e; }); }
-      catch(e){ alert("Sign-in failed: "+(e?.message||e)); }
-    });
+
+    function showLoginScreen(show){
+      loginScreen.style.display = show ? "block" : "none";
+      appMain.style.display     = show ? "none"  : "block";
+    }
+
+    async function handleGoogleLogin(){
+      // บันทึกค่า prefill ชื่อเล่น/อายุชั่วคราวใน session
+      sessionStorage.setItem("preNick", (preNick.value||"").trim());
+      sessionStorage.setItem("preAge",  (preAge.value||"").trim());
+      try{
+        await signInWithPopup(auth, provider)
+          .catch(async e=>{ if(/popup/i.test(e?.message||"")) await signInWithRedirect(auth, provider); else throw e; });
+      }catch(e){
+        alert("Sign-in failed: "+(e?.message||e));
+      }
+    }
+    loginBtn.addEventListener("click", handleGoogleLogin);
+    googleBtn.addEventListener("click", handleGoogleLogin);
+
     signOutBtn.addEventListener("click", async ()=>{ try{ await signOut(auth);}catch(e){ console.error(e);} });
+
     getRedirectResult(auth).catch(()=>{});
 
-    onAuthStateChanged(auth, (user)=>{
+    onAuthStateChanged(auth, async (user)=>{
       if(user){
         window.currentUID=user.uid;
         uidTag.style.display="none";
         avatar.style.display = user.photoURL ? "inline-block":"none"; if(user.photoURL) avatar.src=user.photoURL;
         googleBtn.style.display="none"; signOutBtn.style.display="inline-block";
+
+        // สร้าง/อัปเดตโปรไฟล์
+        await ensureProfile(user);
+        // เข้าแอป
+        showLoginScreen(false);
         searchBox.value=""; fromDate.value=""; toDate.value=""; searchBar.classList.remove("has-text");
         subscribeFlights();
       }else{
@@ -374,24 +488,74 @@
         uidTag.textContent="Signed out"; uidTag.style.display="inline-block";
         avatar.style.display="none"; googleBtn.style.display="inline-block"; signOutBtn.style.display="none";
         rows.innerHTML=""; setStats(0,0,0);
+        showLoginScreen(true);
       }
     });
 
-    // --- Searchbar ---
+    async function ensureProfile(user){
+      const ref=userDoc(); if(!ref) return;
+      const snap=await getDoc(ref);
+      const preNickVal = (sessionStorage.getItem("preNick")||"").trim();
+      const preAgeVal  = (sessionStorage.getItem("preAge")||"").trim();
+
+      if(!snap.exists()){
+        await setDoc(ref,{
+          uid:user.uid,
+          displayName:user.displayName||"",
+          photoURL:user.photoURL||"",
+          nickname: preNickVal || "",
+          age: preAgeVal ? Number(preAgeVal) : null,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        }, {merge:true});
+      }
+
+      // ถ้ายังไม่มี nickname/age ให้เด้ง modal
+      const data = (await getDoc(ref)).data()||{};
+      if(!data.nickname || !data.age){
+        nickName.value = data.nickname || preNickVal || "";
+        age.value      = data.age || preAgeVal || "";
+        openProfile(true);
+      }
+    }
+
+    /* ---------- Profile Modal ---------- */
+    function openProfile(show){
+      profileModal.style.display = show ? "grid" : "none";
+      profileModal.setAttribute("aria-hidden", show? "false":"true");
+      profileErr.style.display="none";
+    }
+    avatar.addEventListener("click", ()=>openProfile(true));
+    closeProfile.addEventListener("click", ()=>openProfile(false));
+
+    saveProfile.addEventListener("click", async ()=>{
+      const n=(nickName.value||"").trim();
+      const a=Number((age.value||"").trim());
+      if(!n || !Number.isFinite(a) || a<1 || a>120){
+        profileErr.style.display="block"; return;
+      }
+      const ref=userDoc(); if(!ref) return;
+      await setDoc(ref,{ nickname:n, age:a, updatedAt:serverTimestamp() }, {merge:true});
+      openProfile(false);
+      // ล้างค่า prefill ใน session
+      sessionStorage.removeItem("preNick"); sessionStorage.removeItem("preAge");
+    });
+
+    /* ---------- Search/Filter ---------- */
     function debounce(fn,ms=180){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
     const onSearch = debounce(()=>{ searchBar.classList.toggle("has-text", !!searchBox.value.trim()); renderRows(cache); }, 120);
     searchBox.addEventListener("input", onSearch);
     clearSearch.addEventListener("click", ()=>{ searchBox.value=""; searchBar.classList.remove("has-text"); renderRows(cache); searchBox.focus(); });
     filterBtn.addEventListener("click", ()=> renderRows(cache));
 
-    // --- Stats ---
+    /* ---------- Stats ---------- */
     function setStats(total, count, last30){
       $("statTotal").textContent = minutesToHHMM(total);
       $("statCount").textContent = String(count);
       $("stat30").textContent   = minutesToHHMM(last30);
     }
 
-    // --- List (realtime + fallback index) ---
+    /* ---------- Realtime list ---------- */
     let unsub=null, cache=[];
     function listenWithQuery(qy){
       if (unsub) { try{unsub()}catch{}; unsub=null; }
@@ -408,12 +572,9 @@
         },
         err => {
           if (err?.code === 'failed-precondition') {
-            console.warn("Missing composite index, fallback to orderBy(depDate).");
             const col = flightsCol(); if(!col) return;
-            listenWithQuery(query(col, orderBy('depDate','desc')));
-          } else {
-            console.error("Snapshot error:", err);
-          }
+            listenWithQuery(query(col, orderBy('depDate','desc'))); // fallback หากยังไม่มี index
+          } else { console.error("Snapshot error:", err); }
         }
       );
     }
@@ -464,7 +625,6 @@
       if (delBtn)  { e.preventDefault(); deleteFlight(delBtn.dataset.id); }
     });
 
-    // CRUD
     function deleteFlight(id){
       if(!confirm("ลบรายการนี้ใช่ไหม?")) return;
       if(!window.currentUID) return alert("กรุณา Login ด้วย Google ก่อน");
@@ -516,7 +676,6 @@
       document.getElementById("listCard").scrollIntoView({behavior:"auto",block:"start"});
     });
 
-    // Export / Print
     exportBtn.addEventListener("click", ()=>{
       const header=['depDate','depTime','depOffset','arrDate','arrTime','arrOffset','airline','flightNo','aircraftType','registration','origin','destination','route','airTime','crewRole','ldgDay','ldgNight','remarks'];
       const lines=cache.map(x=> header.map(h=> (x[h]??'').toString().replace(/"/g,'""')).map(v=>`"${v}"`).join(","));
@@ -525,7 +684,6 @@
     });
     printBtn.addEventListener("click",()=>window.print());
 
-    // Reset / Demo
     resetBtn.addEventListener("click",()=>{ logForm.reset(); setToday(); autoAdjustArrivalDate(); });
     addDemoBtn.addEventListener("click",()=>{ const iso=new Date().toISOString().slice(0,10);
       depDate.value=iso; arrDate.value=iso; origin.value="BKK – Suvarnabhumi Airport"; destination.value="HKT – Phuket International Airport";
@@ -535,7 +693,7 @@
       ['airline','flightNo','aircraftType','registration','origin','destination'].forEach(id=>$(id).dispatchEvent(new Event('input')));
     });
 
-    // เงียบ error จากบางส่วนขยาย (ไม่เกี่ยวกับเว็บเรา)
+    // เงียบ error แปลกจาก extension ภายนอก
     window.addEventListener('unhandledrejection', (e) => {
       const r = e.reason || {};
       if (r?.message === 'permission error' && r?.reqInfo?.pathPrefix === '/site_integration') e.preventDefault();
