@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Flight Logbook — Firebase + Google Login</title>
   <style>
     :root{
@@ -31,7 +31,7 @@
     .tag{padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px;background:#0e1422}
 
     .btn{border:1px solid var(--border);background:linear-gradient(180deg,#0f1624,#0b101b);color:var(--fg);
-      padding:9px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:.15s}
+      padding:11px 14px;border-radius:12px;font-weight:600;cursor:pointer;transition:.15s}
     .btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
     .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#0a0e16;border:none}
     .btn.ghost{background:transparent}
@@ -52,8 +52,12 @@
     .field{flex:1;display:flex;flex-direction:column;gap:6px;min-width:160px}
     .field label{font-size:13px;color:var(--muted)}
     .field input,.field select,.field textarea{background:var(--input);color:var(--fg);border:1px solid var(--border);
-      border-radius:12px;padding:10px 12px;outline:none}
+      border-radius:12px;padding:12px 12px;outline:none}
+    .field input[type="time"], .field input[type="date"]{min-height:44px}
+    .field input[type="number"]{appearance:textfield}
+    .field input::-webkit-outer-spin-button,.field input::-webkit-inner-spin-button{appearance:none;margin:0}
     .hint{font-size:12px;color:var(--muted)}
+    .right{text-align:right}
 
     table{width:100%;border-collapse:separate;border-spacing:0 10px}
     thead th{font-size:12px;color:var(--muted);text-align:left;padding:0 10px}
@@ -61,21 +65,36 @@
     tbody td{padding:12px 10px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
     tbody tr td:first-child{border-left:1px solid var(--border);border-top-left-radius:12px;border-bottom-left-radius:12px}
     tbody tr td:last-child{border-right:1px solid var(--border);border-top-right-radius:12px;border-bottom-right-radius:12px}
-    .right{text-align:right}
     tr.flash{background:#0b3a2a !important}
 
     .chips{display:flex;gap:6px;flex-wrap:wrap}
     .chip{background:#111827;color:#cbd5e1;padding:6px 10px;border-radius:999px;border:1px solid var(--border);font-size:12px}
+    .chip.badge{display:inline-flex;align-items:center;gap:6px}
 
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(4,7,12,.6);z-index:50}
-    .panel{width:min(920px,92vw);max-height:90vh;overflow:auto;background:#0e1422;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
-    .footer{opacity:.7;font-size:12px;text-align:center;padding:20px}
+    /* --- Pretty Searchbar --- */
+    .tools{gap:10px; align-items:center}
+    .searchwrap{display:flex; gap:10px; align-items:center; flex:1; min-width:280px; flex-wrap:wrap}
+    .searchbar{position:relative; flex:1; min-width:260px}
+    .searchbar .search-input{
+      width:100%; padding:12px 40px 12px 40px; border-radius:14px;
+      background:linear-gradient(180deg,#0c1322,#0a0f1a); color:var(--fg); border:1px solid var(--border);
+      outline:none; transition:.18s; box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+    .searchbar .search-input::placeholder{color:#9aa6b2}
+    .searchbar .search-input:focus{border-color:transparent; box-shadow:0 0 0 2px rgba(125,211,252,.35), 0 8px 30px rgba(0,0,0,.25)}
+    .searchbar .icon{position:absolute; left:12px; top:50%; transform:translateY(-50%); width:18px; height:18px; opacity:.7; pointer-events:none}
+    .searchbar .clear{position:absolute; right:8px; top:50%; transform:translateY(-50%); border:1px solid var(--border); background:#0f1624;
+      color:#cbd5e1; width:26px; height:26px; border-radius:999px; cursor:pointer; display:none; align-items:center; justify-content:center; font-size:16px; line-height:1}
+    .searchbar.has-text .clear{display:flex}
+    .input-chip{display:flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--border); border-radius:12px; background:#0b1220}
+    .input-chip svg{width:16px; height:16px; opacity:.6}
+    .input-chip input[type="date"]{background:transparent; border:none; color:var(--fg); outline:none; padding:0; min-width:130px}
+    @media (max-width:720px){ .input-chip input[type="date"]{min-width:110px} }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap row">
-      <!-- Brand ซ้าย + ไอคอนเครื่องบิน -->
       <div class="brand">
         <svg class="plane" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M21 16.5l-8.5-3.4-4.1 4.1 1.2-5.6L3 9l18-6-6 18-2.6-6.6L21 16.5z" fill="url(#g)"/>
@@ -83,7 +102,6 @@
         </svg>
         <h1>Flight Logbook</h1>
         <span class="tag" id="uidTag">Signed out</span>
-        <!-- หลัง Login โชว์แค่รูปโปรไฟล์ -->
         <img id="avatar" class="avatar" alt="">
       </div>
 
@@ -97,8 +115,7 @@
   </header>
 
   <main class="wrap">
-    <!-- สรุปสถิติ -->
-    <section class="row stats" id="statsRow">
+    <section class="row stats">
       <div class="stat"><div class="lbl">ชั่วโมงรวม (Block/Air)</div><div class="val" id="statTotal">0:00</div></div>
       <div class="stat"><div class="lbl">ชั่วโมง 30 วันล่าสุด</div><div class="val" id="stat30">0:00</div></div>
       <div class="stat"><div class="lbl">จำนวนเที่ยวบิน</div><div class="val" id="statCount">0</div></div>
@@ -106,7 +123,7 @@
     </section>
 
     <div class="grid">
-      <!-- ฟอร์มบันทึก -->
+      <!-- ฟอร์ม -->
       <section class="card" id="formCard">
         <div class="hd"><strong>บันทึกเที่ยวบิน</strong></div>
         <div class="bd">
@@ -123,36 +140,31 @@
             </div>
 
             <div class="row">
-              <div class="field"><label>สายการบิน</label><input id="airline" placeholder="THA / TG"></div>
-              <div class="field"><label>เที่ยวบิน</label><input id="flightNo" placeholder="TG102" required></div>
-              <div class="field"><label>เครื่องบิน</label><input id="aircraftType" placeholder="A320 / B738"></div>
-              <div class="field"><label>ทะเบียน</label><input id="registration" placeholder="HS-XXX"></div>
+              <div class="field"><label>สายการบิน</label><input id="airline" placeholder="THA / TG" autocomplete="off"></div>
+              <div class="field"><label>เที่ยวบิน</label><input id="flightNo" placeholder="TG102" required autocomplete="off"></div>
+              <div class="field"><label>เครื่องบิน</label><input id="aircraftType" placeholder="A320 / B738" autocomplete="off"></div>
+              <div class="field"><label>ทะเบียน</label><input id="registration" placeholder="HS-XXX" autocomplete="off"></div>
             </div>
 
             <div class="row">
               <div class="field"><label>ต้นทาง</label>
-                <input id="origin" placeholder="BKK – Suvarnabhumi" list="originList" autocomplete="off">
-                <datalist id="originList"></datalist>
-                <span class="hint">พิมพ์ ≥ 2 ตัวอักษรเพื่อค้นหาใน Firestore</span>
+                <input id="origin" placeholder="BKK – Suvarnabhumi" autocomplete="off">
+                <span class="hint">กรอกย่อ/ชื่อสนามบินได้</span>
               </div>
               <div class="field"><label>ปลายทาง</label>
-                <input id="destination" placeholder="HKT – Phuket" list="destList" autocomplete="off">
-                <datalist id="destList"></datalist>
+                <input id="destination" placeholder="HKT – Phuket" autocomplete="off">
               </div>
               <div class="field"><label>Landings (Day/Night)</label>
                 <div class="row" style="align-items:center">
-                  <input type="number" id="ldgDay" min="0" value="1" style="max-width:120px">
-                  <input type="number" id="ldgNight" min="0" value="0" style="max-width:120px">
+                  <input type="number" id="ldgDay" min="0" value="1" inputmode="numeric" style="max-width:120px">
+                  <input type="number" id="ldgNight" min="0" value="0" inputmode="numeric" style="max-width:120px">
                 </div>
               </div>
             </div>
 
             <div class="row">
               <div class="field" style="flex:2"><label>หมายเหตุ</label><textarea id="remarks" rows="2" placeholder="Routing, MEL, ATC, Fuel, Wx"></textarea></div>
-              <div class="field"><label>เวลาบิน (คำนวณอัตโนมัติ)</label>
-                <input id="airTime" placeholder="0:00" readonly>
-                <span class="hint">คำนวณจาก Dep/Arr + UTC offset</span>
-              </div>
+              <div class="field"><label>เวลาบิน (อัตโนมัติ)</label><input id="airTime" placeholder="0:00" readonly></div>
             </div>
 
             <div class="row" style="justify-content:flex-end;margin-top:10px">
@@ -163,15 +175,32 @@
         </div>
       </section>
 
-      <!-- รายการบันทึก -->
+      <!-- รายการ -->
       <section class="card" id="listCard">
         <div class="hd">
           <strong>รายการบันทึก</strong>
-          <div class="row" style="flex-wrap:wrap">
-            <input class="field" id="searchBox" placeholder="ค้นหา: Flight / Route / Reg / หมายเหตุ" />
-            <input class="field" type="date" id="fromDate" title="จากวันที่">
-            <input class="field" type="date" id="toDate" title="ถึงวันที่">
-            <button class="btn ghost" id="filterBtn">กรอง</button>
+          <div class="row tools">
+            <div class="searchwrap">
+              <div class="searchbar" id="searchBar">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" stroke="#9aa6b2" stroke-width="2"/>
+                  <path d="M20 20l-3.5-3.5" stroke="#9aa6b2" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <input id="searchBox" class="search-input" type="search" placeholder="ค้นหา: Flight / Route / Reg / หมายเหตุ" autocomplete="off">
+                <button id="clearSearch" class="clear" aria-label="ล้างการค้นหา">&times;</button>
+              </div>
+              <div class="input-chip" title="จากวันที่">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="#9aa6b2"/><path d="M8 3v4M16 3v4M3 9h18" stroke="#9aa6b2"/></svg>
+                <input type="date" id="fromDate">
+              </div>
+              <div class="input-chip" title="ถึงวันที่">
+                <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" stroke="#9aa6b2"/><path d="M8 3v4M16 3v4M3 9h18" stroke="#9aa6b2"/></svg>
+                <input type="date" id="toDate">
+              </div>
+              <button class="btn ghost" id="filterBtn">กรอง</button>
+            </div>
+            <div class="spacer"></div>
+            <span class="chip badge" id="syncBadge">สถานะ: พร้อมซิงก์</span>
             <button class="btn" id="exportBtn">Export CSV</button>
             <button class="btn" id="printBtn">พิมพ์</button>
           </div>
@@ -203,19 +232,17 @@
     <div class="footer">Made with Firebase</div>
   </main>
 
-  <!-- Modal: Import Airports -->
-  <div class="modal" id="importModal" role="dialog" aria-modal="true">
+  <!-- Modal Import CSV -->
+  <div class="modal" id="importModal" role="dialog" aria-modal="true" style="display:none">
     <div class="panel">
       <div class="hd" style="display:flex; justify-content:space-between; align-items:center">
         <strong>Import Airports (CSV) → Firestore</strong>
         <button class="btn ghost" id="closeImport">ปิด</button>
       </div>
       <div class="bd">
-        <p class="hint">คอลัมน์รองรับ: <code>name,iata,icao,city,country,tz,utcOffset</code></p>
+        <p class="hint">คอลัมน์: name,iata,icao,city,country,tz,utcOffset (รองรับ header/"คอมมาในฟิลด์")</p>
         <textarea id="csvArea" rows="10" style="width:100%;background:#0b1220;color:#e5e7eb;border:1px solid var(--border);border-radius:12px;padding:12px"
-          placeholder="ตัวอย่าง:
-Suvarnabhumi Airport,BKK,VTBS,Bangkok,Thailand,Asia/Bangkok,+07:00
-Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></textarea>
+          placeholder="Suvarnabhumi Airport,BKK,VTBS,Bangkok,Thailand,Asia/Bangkok,+07:00"></textarea>
         <div class="row" style="justify-content:flex-end;margin-top:10px">
           <button class="btn" id="runImport">อัปโหลดเข้า Firestore</button>
         </div>
@@ -224,17 +251,16 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
   </div>
 
   <script type="module">
-    // ===== Firebase (CDN) =====
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import {
       getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
     import {
-      getFirestore, collection, addDoc, doc, setDoc, deleteDoc, query, orderBy, onSnapshot,
-      enableIndexedDbPersistence, serverTimestamp, getDocs, startAt, endAt, limit
+      initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
+      collection, addDoc, doc, setDoc, deleteDoc, query, orderBy, onSnapshot,
+      serverTimestamp, writeBatch
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    // ----- Firebase Config (เฉพาะโปรเจกต์ของคุณ) -----
     const firebaseConfig = {
       apiKey: "AIzaSyB-mqfAKi-qWowUgJXph-Z7qn9KQX31CbE",
       authDomain: "flight-logbook-50b3a.firebaseapp.com",
@@ -242,78 +268,43 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
       storageBucket: "flight-logbook-50b3a.appspot.com",
     };
     const app = initializeApp(firebaseConfig);
+    // ✅ Persistence รุ่นใหม่: รองรับหลายแท็บ/หลายอุปกรณ์และ offline cache
+    const db = initializeFirestore(app, {
+      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+    });
     const auth = getAuth(app);
-    const db = getFirestore(app);
-    enableIndexedDbPersistence(db).catch(()=>{}); // offline-first
 
-    // ====== Helpers ======
-    const $ = (id)=>document.getElementById(id);
-    const pad=(n)=>n.toString().padStart(2,"0");
-    const minutesToHHMM = (min)=>`${Math.floor(min/60)}:${pad(min%60)}`;
-    const parseHHMM = (s)=>{ if(!s) return 0; const [h,m]=(s+"").split(":"); return (+h||0)*60 + (+m||0); };
-    const parseOffsetToMin = (off)=>{ const m=/^([+-])(\d{2}):(\d{2})$/.exec(off||""); if(!m) return 0; const sign=m[1]==="-"?-1:1; return sign*(+m[2]*60 + +m[3]); };
-    const utcMsFromLocal = (d,t,off)=> Date.UTC(...((()=>{const [Y,M,D]=d.split("-").map(Number);const[hh,mm]=t.split(":").map(Number);return [Y,(M||1)-1,D||1,hh||0,mm||0,0];})())) - parseOffsetToMin(off)*60000;
-
-    // ====== Element Refs ======
+    const $ = id => document.getElementById(id);
     const uidTag=$("uidTag"), avatar=$("avatar"), googleBtn=$("googleLoginBtn"), signOutBtn=$("signOutBtn");
     const depDate=$("depDate"), depTime=$("depTime"), arrDate=$("arrDate"), arrTime=$("arrTime");
     const depOffset=$("depOffset"), arrOffset=$("arrOffset");
     const airline=$("airline"), flightNo=$("flightNo"), aircraftType=$("aircraftType"), registration=$("registration");
     const origin=$("origin"), destination=$("destination"), ldgDay=$("ldgDay"), ldgNight=$("ldgNight");
-    const remarks=$("remarks"), airTime=$("airTime");
+    const remarks=$("remarks"), airTime=$("airTime"), logForm=$("logForm");
     const rows=$("rows"), searchBox=$("searchBox"), fromDate=$("fromDate"), toDate=$("toDate");
     const filterBtn=$("filterBtn"), exportBtn=$("exportBtn"), printBtn=$("printBtn");
-    const statTotal=$("statTotal"), stat30=$("stat30"), statCount=$("statCount"), statNightIFR=$("statNightIFR");
+    const addDemoBtn=$("addDemoBtn"), resetBtn=$("resetBtn");
+    const searchBar=$("searchBar"), clearSearch=$("clearSearch"), syncBadge=$("syncBadge");
     const importAirportsBtn=$("importAirportsBtn"), importModal=$("importModal"), closeImport=$("closeImport"), csvArea=$("csvArea"), runImport=$("runImport");
-    const seedSampleBtn=$("seedSampleBtn"), addDemoBtn=$("addDemoBtn"), resetBtn=$("resetBtn");
-    const flightsCol = ()=> window.currentUID ? collection(db,"users",window.currentUID,"flights") : null;
+    const flightsCol = () => window.currentUID ? collection(db,"users",window.currentUID,"flights") : null;
 
-    // ====== Time Calc + Auto-arrival date ======
-    function fillOffsets(){
-      const list=[-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,5.75,6,6.5,7,8,8.75,9,9.5,10,10.5,11,12,12.75,13,14];
-      const fmt=v=>`${v>=0?"+":"-"}${pad(Math.floor(Math.abs(v)))}:${pad(Math.round((Math.abs(v)%1)*60))}`;
-      const opt=list.map(v=>`<option ${v===7?"selected":""}>${fmt(v)}</option>`).join("");
-      depOffset.innerHTML=opt; arrOffset.innerHTML=opt;
-    }
-    function setToday(){
-      const iso=new Date().toISOString().slice(0,10);
-      depDate.value=iso; arrDate.value=iso; depTime.value="09:00"; arrTime.value="10:30";
-    }
-    function minutesBetween(){
-      if(!depDate.value||!depTime.value||!arrDate.value||!arrTime.value) return 0;
-      let depUTC=utcMsFromLocal(depDate.value,depTime.value,depOffset.value);
-      let arrUTC=utcMsFromLocal(arrDate.value,arrTime.value,arrOffset.value);
-      let diff=arrUTC-depUTC; if(diff<0) diff+=7*24*60*60*1000; // เผื่อข้ามวันหลายโซนเวลา
-      return Math.round(diff/60000);
-    }
-    function autoAdjustArrivalDate(){
-      if(!depDate.value||!depTime.value||!arrTime.value||!depOffset.value||!arrOffset.value) return;
-      const toISO=(d)=>d.toISOString().slice(0,10);
-      const addDays=(iso,k)=>{const dt=new Date(iso+"T00:00:00Z"); dt.setUTCDate(dt.getUTCDate()+k); return toISO(dt);};
-      const cand=[-1,0,1,2].map(k=>addDays(depDate.value,k));
-      const depUTC=utcMsFromLocal(depDate.value,depTime.value,depOffset.value);
-      let best=null,bBest=Infinity;
-      for(const iso of cand){
-        const arrUTC=utcMsFromLocal(iso,arrTime.value,arrOffset.value);
-        const diff=arrUTC-depUTC;
-        if(diff>=0 && diff<=30*60*60*1000 && diff<bBest){ bBest=diff; best=iso; }
-      }
-      if(best) arrDate.value=best;
-      airTime.value=minutesToHHMM(minutesBetween());
-    }
-    ["depDate","depTime","depOffset","arrTime","arrOffset"].forEach(id=>{
-      const el=$(id); el.addEventListener("input",autoAdjustArrivalDate); el.addEventListener("change",autoAdjustArrivalDate);
-    });
+    // ----- Time / helpers -----
+    const pad=n=>n.toString().padStart(2,"0");
+    const minutesToHHMM = m => `${Math.floor(m/60)}:${pad(m%60)}`;
+    const parseHHMM = s => { if(!s) return 0; const [h,m]=(s+"").split(":"); return (+h||0)*60+(+m||0); };
+    const parseOffsetToMin = off => { const m=/^([+-])(\d{2}):(\d{2})$/.exec(off||""); if(!m) return 0; const sign=m[1]==="-"?-1:1; return sign*(+m[2]*60 + +m[3]); };
+    const utcMsFromLocal = (d,t,off)=> Date.UTC(...((()=>{const [Y,M,D]=d.split("-").map(Number);const[hh,mm]=t.split(":").map(Number);return [Y,(M||1)-1,D||1,hh||0,mm||0,0];})())) - parseOffsetToMin(off)*60000;
+    const minutesBetween=()=>{ if(!depDate.value||!depTime.value||!arrDate.value||!arrTime.value)return 0; let dep=utcMsFromLocal(depDate.value,depTime.value,depOffset.value), arr=utcMsFromLocal(arrDate.value,arrTime.value,arrOffset.value); let diff=arr-dep; if(diff<0) diff+=7*24*60*60*1000; return Math.round(diff/60000); };
+    function fillOffsets(){ const list=[-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,3.5,4,4.5,5,5.5,5.75,6,6.5,7,8,8.75,9,9.5,10,10.5,11,12,12.75,13,14]; const fmt=v=>`${v>=0?"+":"-"}${pad(Math.floor(Math.abs(v)))}:${pad(Math.round((Math.abs(v)%1)*60))}`; const opt=list.map(v=>`<option ${v===7?"selected":""}>${fmt(v)}</option>`).join(""); depOffset.innerHTML=opt; arrOffset.innerHTML=opt; }
+    function setToday(){ const iso=new Date().toISOString().slice(0,10); depDate.value=iso; arrDate.value=iso; depTime.value="09:00"; arrTime.value="10:30"; }
+    function autoAdjustArrivalDate(){ if(!depDate.value||!depTime.value||!arrTime.value||!depOffset.value||!arrOffset.value)return; const toISO=d=>d.toISOString().slice(0,10); const addDays=(iso,k)=>{const dt=new Date(iso+"T00:00:00Z"); dt.setUTCDate(dt.getUTCDate()+k); return toISO(dt);}; const cand=[-1,0,1,2].map(k=>addDays(depDate.value,k)); const depUTC=utcMsFromLocal(depDate.value,depTime.value,depOffset.value); let best=null,bd=Infinity; for(const iso of cand){const arrUTC=utcMsFromLocal(iso,arrTime.value,arrOffset.value); const diff=arrUTC-depUTC; if(diff>=0 && diff<=30*60*60*1000 && diff<bd){bd=diff;best=iso}} if(best) arrDate.value=best; airTime.value=minutesToHHMM(minutesBetween()); }
+    ["depDate","depTime","depOffset","arrTime","arrOffset"].forEach(id=>{ const el=$(id); el.addEventListener("input",autoAdjustArrivalDate); el.addEventListener("change",autoAdjustArrivalDate); });
 
-    // ====== Auth (Google) ======
+    // ----- Auth -----
     const provider=new GoogleAuthProvider(); provider.setCustomParameters({prompt:"select_account"});
     googleBtn.addEventListener("click", async ()=>{
-      try{
-        await signInWithPopup(auth, provider).catch(async err=>{
-          if(err && /popup/i.test(err.message)){ await signInWithRedirect(auth, provider); }
-          else throw err;
-        });
-      }catch(e){ alert("Sign-in failed: " + (e?.message||e)); }
+      try{ await signInWithPopup(auth, provider).catch(async e=>{ if(/popup/i.test(e?.message||"")) await signInWithRedirect(auth, provider); else throw e; }); }
+      catch(e){ alert("Sign-in failed: "+(e?.message||e)); }
     });
     signOutBtn.addEventListener("click", async ()=>{ try{ await signOut(auth);}catch(e){ console.error(e);} });
     getRedirectResult(auth).catch(()=>{});
@@ -322,29 +313,79 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
       if(user){
         window.currentUID=user.uid;
         uidTag.style.display="none";
-        if(user.photoURL){ avatar.src=user.photoURL; avatar.style.display="inline-block"; } else avatar.style.display="none";
+        avatar.style.display = user.photoURL ? "inline-block":"none"; if(user.photoURL) avatar.src=user.photoURL;
         googleBtn.style.display="none"; signOutBtn.style.display="inline-block";
+        // รีเซ็ตตัวกรองกันกรองค้างจนมองไม่เห็นข้อมูล
+        searchBox.value=""; fromDate.value=""; toDate.value=""; searchBar.classList.remove("has-text");
         subscribeFlights();
       }else{
         window.currentUID=null;
         uidTag.textContent="Signed out"; uidTag.style.display="inline-block";
         avatar.style.display="none"; googleBtn.style.display="inline-block"; signOutBtn.style.display="none";
-        rows.innerHTML=""; statTotal.textContent="0:00"; stat30.textContent="0:00"; statCount.textContent="0"; statNightIFR.textContent="0:00 / 0:00";
+        rows.innerHTML=""; setStats(0,0,0,0,0);
       }
     });
 
-    // ====== CRUD ======
+    // ----- Searchbar behaviors -----
+    function debounce(fn,ms=180){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
+    const onSearch = debounce(()=>{ searchBar.classList.toggle("has-text", !!searchBox.value.trim()); renderRows(cache); }, 120);
+    searchBox.addEventListener("input", onSearch);
+    clearSearch.addEventListener("click", ()=>{ searchBox.value=""; searchBar.classList.remove("has-text"); renderRows(cache); searchBox.focus(); });
+    filterBtn.addEventListener("click", ()=>renderRows(cache));
+
+    // ----- Stats -----
+    function setStats(total, night, ifr, count, last30){ 
+      $("statTotal").textContent = minutesToHHMM(total);
+      $("statNightIFR").textContent = `${minutesToHHMM(night)} / ${minutesToHHMM(ifr)}`;
+      $("statCount").textContent = String(count);
+      $("stat30").textContent = minutesToHHMM(last30);
+    }
+
+    // ----- Flights list -----
     let unsub=null, cache=[];
+    function listenWithQuery(qy){
+      if (unsub) { try{unsub()}catch{}; unsub=null; }
+      unsub = onSnapshot(
+        qy,
+        { includeMetadataChanges: true },
+        snap => {
+          // แสดงสถานะซิงก์
+          const pending = snap.metadata.hasPendingWrites;
+          const fromCache = snap.metadata.fromCache;
+          syncBadge.textContent = pending ? "สถานะ: กำลังอัปโหลด..." : (fromCache && !navigator.onLine ? "สถานะ: ออฟไลน์ (แคช)" : "สถานะ: พร้อมซิงก์");
+
+          cache = [];
+          snap.forEach(d => cache.push({ id:d.id, ...d.data() }));
+          renderRows(cache);
+        },
+        err => {
+          if (err?.code === 'failed-precondition') {
+            console.warn("Missing composite index, fallback to single orderBy(depDate).");
+            const col = flightsCol(); if(!col) return;
+            listenWithQuery(query(col, orderBy('depDate','desc')));
+          } else {
+            console.error("Snapshot error:", err);
+          }
+        }
+      );
+    }
+    function subscribeFlights(){
+      const col = flightsCol(); if(!col) return;
+      listenWithQuery(query(col, orderBy('depDate','desc'), orderBy('depTime','desc')));
+    }
+
+    const parseQ = x => (x||"").toLowerCase();
     function renderRows(list){
-      const q=(searchBox.value||"").toLowerCase();
-      const filt=list.filter(x=>{
-        const hay=[x.flightNo,x.route,x.registration,x.remarks,x.airline,x.aircraftType].join(" ").toLowerCase();
-        let ok=hay.includes(q);
-        if(fromDate.value) ok=ok && x.depDate>=fromDate.value;
-        if(toDate.value) ok=ok && x.depDate<=toDate.value;
+      const q = parseQ(searchBox.value);
+      const filtered = list.filter(x=>{
+        const hay = [x.flightNo,x.route,x.registration,x.remarks,x.airline,x.aircraftType].join(" ").toLowerCase();
+        let ok = hay.includes(q);
+        if(fromDate.value) ok = ok && x.depDate >= fromDate.value;
+        if(toDate.value) ok = ok && x.depDate <= toDate.value;
         return ok;
       });
-      rows.innerHTML=filt.map(x=>`
+
+      rows.innerHTML = filtered.map(x=>`
         <tr data-id="${x.id}" class="${x.id===window._justAdded?'flash':''}">
           <td>${x.depDate}</td>
           <td><strong>${x.flightNo||""}</strong><div class="hint">${x.airline||""}</div></td>
@@ -363,32 +404,23 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
         setTimeout(()=>{ rows.querySelector(`tr[data-id="${window._justAdded}"]`)?.classList.remove("flash"); window._justAdded=null; }, 1200);
       }
 
-      // สถิติ
-      const sum=filt.reduce((a,x)=>({total:a.total+parseHHMM(x.airTime||"0:00"),night:a.night+parseHHMM(x.nightTime||"0:00"),ifr:a.ifr+parseHHMM(x.ifrTime||"0:00")}),{total:0,night:0,ifr:0});
-      statTotal.textContent=minutesToHHMM(sum.total);
-      statNightIFR.textContent=`${minutesToHHMM(sum.night)} / ${minutesToHHMM(sum.ifr)}`;
-      statCount.textContent=String(filt.length);
-      const today=new Date().toISOString().slice(0,10), d30=new Date(Date.now()-29*86400000).toISOString().slice(0,10);
-      const last30=list.filter(x=>x.depDate>=d30 && x.depDate<=today).reduce((s,x)=>s+parseHHMM(x.airTime||"0:00"),0);
-      stat30.textContent=minutesToHHMM(last30);
-    }
-    function subscribeFlights(){
-      if(unsub){ try{unsub()}catch{}; unsub=null; }
-      const col=flightsCol(); if(!col) return;
-      const qy=query(col, orderBy("depDate","desc"), orderBy("depTime","desc"));
-      unsub=onSnapshot(qy,(snap)=>{ cache=[]; snap.forEach(d=>cache.push({id:d.id,...d.data()})); renderRows(cache); });
+      const sum = filtered.reduce((a,x)=>({ total:a.total+parseHHMM(x.airTime||"0:00"), night:a.night+parseHHMM(x.nightTime||"0:00"), ifr:a.ifr+parseHHMM(x.ifrTime||"0:00") }), {total:0,night:0,ifr:0});
+      const today = new Date().toISOString().slice(0,10);
+      const d30 = new Date(Date.now()-29*86400000).toISOString().slice(0,10);
+      const last30 = list.filter(x=>x.depDate>=d30 && x.depDate<=today).reduce((s,x)=>s+parseHHMM(x.airTime||"0:00"),0);
+      setStats(sum.total, sum.night, sum.ifr, filtered.length, last30);
     }
 
-    window.deleteFlight=async function(id){
+    window.deleteFlight = async function(id){
       if(!confirm("ลบรายการนี้ใช่ไหม?")) return;
       if(!window.currentUID) return alert("กรุณา Login ด้วย Google ก่อน");
-      const idx=cache.findIndex(i=>i.id===id); if(idx===-1) return;
-      const backup=cache[idx];
+      const idx = cache.findIndex(i=>i.id===id); if(idx===-1) return;
+      const backup = cache[idx];
       cache.splice(idx,1); renderRows(cache); // optimistic
       try{ await deleteDoc(doc(db,"users",window.currentUID,"flights",id)); }
       catch(e){ cache.splice(idx,0,backup); renderRows(cache); alert("ลบไม่สำเร็จ: "+(e?.message||e)); }
     };
-    window.editFlight=function(id){
+    window.editFlight = function(id){
       const x=cache.find(i=>i.id===id); if(!x) return;
       depDate.value=x.depDate; depTime.value=x.depTime; arrDate.value=x.arrDate; arrTime.value=x.arrTime;
       depOffset.value=x.depOffset||"+07:00"; arrOffset.value=x.arrOffset||"+07:00";
@@ -398,12 +430,12 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
       window._editing=id; window.scrollTo({top:0,behavior:"smooth"});
     };
 
-    // Submit → save แล้วเลื่อนไป "รายการบันทึก" ทันที
-    document.getElementById("logForm").addEventListener("submit", async (e)=>{
+    logForm.addEventListener("submit", async (e)=>{
       e.preventDefault();
       if(!window.currentUID) return alert("กรุณา Login ด้วย Google ก่อน");
-      if(!airTime.value) airTime.value=minutesToHHMM(minutesBetween());
-      const data={
+      if(!airTime.value) airTime.value = minutesToHHMM(minutesBetween());
+
+      const data = {
         depDate:depDate.value, depTime:depTime.value, depOffset:depOffset.value,
         arrDate:arrDate.value, arrTime:arrTime.value, arrOffset:arrOffset.value,
         airline:airline.value.trim(), flightNo:flightNo.value.trim(),
@@ -413,90 +445,66 @@ Phuket International Airport,HKT,VTSP,Phuket,Thailand,Asia/Bangkok,+07:00"></tex
         ldgDay:Number(ldgDay.value||0), ldgNight:Number(ldgNight.value||0),
         nightTime:"0:00", ifrTime:"0:00", crewRole:"PIC",
         remarks:remarks.value.trim(), airTime:airTime.value||"0:00",
-        createdAt:serverTimestamp(), updatedAt:serverTimestamp(),
+        createdAt:serverTimestamp(), updatedAt:serverTimestamp()
       };
+
       if(window._editing){
-        await setDoc(doc(db,"users",window.currentUID,"flights",window._editing),data,{merge:true});
+        await setDoc(doc(db,"users",window.currentUID,"flights",window._editing), data, {merge:true});
         window._editing=null;
       }else{
-        const ref=await addDoc(collection(db,"users",window.currentUID,"flights"),data);
-        window._justAdded=ref.id;
+        const ref = await addDoc(collection(db,"users",window.currentUID,"flights"), data);
+        window._justAdded = ref.id;
       }
-      // reset + auto scroll to list
-      e.target.reset(); setToday(); autoAdjustArrivalDate();
+
+      logForm.reset(); setToday(); autoAdjustArrivalDate();
       document.getElementById("listCard").scrollIntoView({behavior:"auto",block:"start"});
     });
 
-    // ค้นหา/กรอง/ส่งออก/พิมพ์
-    searchBox.addEventListener("input",()=>renderRows(cache));
-    filterBtn.addEventListener("click",()=>renderRows(cache));
-    exportBtn.addEventListener("click",()=>{
+    // Export / Print
+    exportBtn.addEventListener("click", ()=>{
       const header=['depDate','depTime','depOffset','arrDate','arrTime','arrOffset','airline','flightNo','aircraftType','registration','origin','destination','route','airTime','nightTime','ifrTime','crewRole','ldgDay','ldgNight','remarks'];
-      const lines=cache.map(x=>header.map(h=>(x[h]??'').toString().replace(/"/g,'""')).map(v=>`"${v}"`).join(","));
+      const lines=cache.map(x=> header.map(h=> (x[h]??'').toString().replace(/"/g,'""')).map(v=>`"${v}"`).join(","));
       const blob=new Blob([header.join(",")+"\n"+lines.join("\n")],{type:"text/csv;charset=utf-8;"}); const url=URL.createObjectURL(blob);
       const a=document.createElement("a"); a.href=url; a.download="flight-logbook.csv"; a.click(); URL.revokeObjectURL(url);
     });
     printBtn.addEventListener("click",()=>window.print());
 
-    // Import Airports (CSV)
-    importAirportsBtn.addEventListener("click",()=>importModal.style.display="flex");
-    closeImport.addEventListener("click",()=>importModal.style.display="none");
+    // Reset / Demo
+    resetBtn.addEventListener("click",()=>{ logForm.reset(); setToday(); autoAdjustArrivalDate(); });
+    addDemoBtn.addEventListener("click",()=>{ const iso=new Date().toISOString().slice(0,10); depDate.value=iso; arrDate.value=iso; origin.value="BKK – Suvarnabhumi Airport"; destination.value="HKT – Phuket International Airport"; airline.value="THA"; flightNo.value="TG201"; aircraftType.value="A320"; registration.value="HS-XXX"; depTime.value="09:05"; arrTime.value="10:35"; depOffset.value="+07:00"; arrOffset.value="+07:00"; autoAdjustArrivalDate(); });
+
+    // Import Airports (ทน CSV + batch)
+    function parseCSV(text){ text=(text||"").replace(/^\uFEFF/,""); const rows=[]; let cur="",row=[],q=false; for(let i=0;i<text.length;i++){const c=text[i]; if(q){ if(c=='"'){ if(text[i+1]=='"'){cur+='"';i++;} else q=false; } else cur+=c; } else { if(c=='"') q=true; else if(c==","){row.push(cur);cur="";} else if(c=="\n"){row.push(cur);rows.push(row);row=[];cur="";} else if(c=="\r"){} else cur+=c; } } row.push(cur); if(row.length>1||cur.trim()!=="") rows.push(row); return rows; }
+    const looksLikeHeader = c => !!c && c.map(s=>(s||"").trim().toLowerCase()).includes("name");
+    importAirportsBtn.addEventListener("click",()=> importModal.style.display="flex");
+    closeImport.addEventListener("click",()=> importModal.style.display="none");
     runImport.addEventListener("click", async ()=>{
       if(!window.currentUID) return alert("กรุณา Login ด้วย Google ก่อน");
-      const text=(csvArea.value||"").trim(); if(!text) return alert("ใส่ข้อมูล CSV ก่อน");
-      const lines=text.split(/\r?\n/).filter(Boolean); let ok=0,fail=0;
-      for(const line of lines){
-        const parts=line.split(","); const [name,iata="",icao="",city="",country="",tz="",utcOffset=""]=[parts[0],parts[1]||"",parts[2]||"",parts[3]||"",parts[4]||"",parts[5]||"",parts[6]||""];
-        try{
-          await addDoc(collection(db,"users",window.currentUID,"airports"),{name:name.trim(),iata:iata.trim(),icao:icao.trim(),city:city.trim(),country:country.trim(),tz:tz.trim(),utcOffset:utcOffset.trim(),nameLower:name.trim().toLowerCase(),createdAt:serverTimestamp()}); ok++;
-        }catch{ fail++; }
-      }
-      alert(`สำเร็จ ${ok} รายการ, ผิดพลาด ${fail}`); importModal.style.display="none"; csvArea.value="";
+      const raw=(csvArea.value||"").trim(); if(!raw) return alert("ใส่ข้อมูล CSV ก่อน");
+      runImport.disabled=true; runImport.textContent="กำลังอัปโหลด...";
+      try{
+        const rows=parseCSV(raw); if(rows.length===0) throw new Error("ไม่พบข้อมูล");
+        if(looksLikeHeader(rows[0])) rows.shift();
+        let batch=writeBatch(db), cnt=0, ok=0, fail=0;
+        for(const r of rows){
+          const [name,iata="",icao="",city="",country="",tz="",utcOffset=""]=[(r[0]||"").trim(),(r[1]||"").trim(),(r[2]||"").trim(),(r[3]||"").trim(),(r[4]||"").trim(),(r[5]||"").trim(),(r[6]||"").trim()];
+          if(!name){ fail++; continue; }
+          batch.set(doc(collection(db,"users",window.currentUID,"airports")), {name,iata,icao,city,country,tz,utcOffset,nameLower:name.toLowerCase(),createdAt:serverTimestamp()});
+          cnt++; if(cnt>=450){ await batch.commit(); ok+=cnt; batch=writeBatch(db); cnt=0; }
+        }
+        if(cnt>0){ await batch.commit(); ok+=cnt; }
+        alert(`สำเร็จ ${ok} รายการ, ผิดพลาด ${fail}`); importModal.style.display="none"; csvArea.value="";
+      }catch(e){ alert("นำเข้าไม่สำเร็จ: "+(e?.message||e)); }
+      finally{ runImport.disabled=false; runImport.textContent="อัปโหลดเข้า Firestore"; }
     });
 
-    // Seed sample airports
-    seedSampleBtn.addEventListener("click", async ()=>{
-      if(!window.currentUID) return alert("กรุณา Login ด้วย Google ก่อน");
-      const samples=[
-        {name:"Suvarnabhumi Airport", iata:"BKK", icao:"VTBS", city:"Bangkok", country:"Thailand", tz:"Asia/Bangkok", utcOffset:"+07:00"},
-        {name:"Don Mueang International Airport", iata:"DMK", icao:"VTBD", city:"Bangkok", country:"Thailand", tz:"Asia/Bangkok", utcOffset:"+07:00"},
-        {name:"Phuket International Airport", iata:"HKT", icao:"VTSP", city:"Phuket", country:"Thailand", tz:"Asia/Bangkok", utcOffset:"+07:00"},
-        {name:"Chiang Mai International Airport", iata:"CNX", icao:"VTCC", city:"Chiang Mai", country:"Thailand", tz:"Asia/Bangkok", utcOffset:"+07:00"},
-        {name:"Tokyo Haneda Airport", iata:"HND", icao:"RJTT", city:"Tokyo", country:"Japan", tz:"Asia/Tokyo", utcOffset:"+09:00"}
-      ];
-      for(const a of samples){ await addDoc(collection(db,"users",window.currentUID,"airports"),{...a,nameLower:a.name.toLowerCase(),createdAt:serverTimestamp()}); }
-      alert("เพิ่มสนามบินตัวอย่างแล้ว");
-    });
+    // Init
+    function init(){ fillOffsets(); setToday(); autoAdjustArrivalDate(); }
+    init();
 
-    // Typeahead สนามบินจาก Firestore ของผู้ใช้
-    async function bindAirportTypeahead(inputId, datalistId){
-      const input=$(inputId), list=$(datalistId);
-      input.addEventListener("input", async ()=>{
-        const term=(input.value||"").trim().toLowerCase();
-        if(!window.currentUID || term.length<2){ list.innerHTML=""; return; }
-        try{
-          const col=collection(db,"users",window.currentUID,"airports");
-          // ใช้ nameLower สำหรับ prefix search
-          const {query:Q,orderBy,startAt:endStartAt,endAt:EndAt} = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js");
-        }catch{}
-      });
-    }
-    // ใช้แบบง่าย: ถ้าต้องการจริงจัง ให้สร้าง index ที่ nameLower และใช้ getDocs + startAt/endAt
-    origin.addEventListener("input", ()=>{/* kept simple to avoid extra reads */});
-    destination.addEventListener("input", ()=>{});
-
-    // Reset / Demo
-    resetBtn.addEventListener("click",()=>{ document.getElementById("logForm").reset(); setToday(); autoAdjustArrivalDate(); });
-    addDemoBtn.addEventListener("click",()=>{
-      const iso=new Date().toISOString().slice(0,10);
-      depDate.value=iso; arrDate.value=iso; origin.value="BKK – Suvarnabhumi Airport"; destination.value="HKT – Phuket International Airport";
-      airline.value="THA"; flightNo.value="TG201"; aircraftType.value="A320"; registration.value="HS-XXX";
-      depTime.value="09:05"; arrTime.value="10:35"; depOffset.value="+07:00"; arrOffset.value="+07:00";
-      autoAdjustArrivalDate();
-    });
-
-    // ===== Init =====
-    fillOffsets(); setToday(); autoAdjustArrivalDate();
+    // ปรับ badge เมื่อ offline/online
+    window.addEventListener("online",  ()=> syncBadge.textContent="สถานะ: พร้อมซิงก์");
+    window.addEventListener("offline", ()=> syncBadge.textContent="สถานะ: ออฟไลน์ (แคช)");
   </script>
 </body>
 </html>
