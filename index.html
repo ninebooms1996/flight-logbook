@@ -115,9 +115,13 @@
     .chip{background:#111827;color:#cbd5e1;padding:6px 10px;border-radius:999px;border:1px solid var(--border);font-size:12px}
     .chip.badge{display:inline-flex;align-items:center;gap:6px}
 
+    .pagination{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:10px}
+    .pagination .info{color:var(--muted);font-size:12px}
+    .pagination .pgbtn{min-height:36px;padding:8px 12px;border-radius:10px}
+
     .footer{opacity:.7;font-size:12px;text-align:center;padding:20px}
 
-    /* ---------- Login Screen (สวย ๆ) ---------- */
+    /* ---------- Login Screen ---------- */
     .login-screen{
       position:fixed;inset:0;z-index:30;display:none;
       background:
@@ -145,8 +149,6 @@
     .gbtn{display:flex;align-items:center;gap:10px;justify-content:center}
     .gbtn img{width:18px;height:18px}
     .hintline{font-size:12px;color:var(--muted)}
-    .login-field{display:flex;flex-direction:column;gap:6px}
-    .login-field input{background:var(--input);border:1px solid var(--border);border-radius:12px;color:var(--fg);padding:12px;min-height:44px;font-size:16px}
 
     @media (max-width: 980px){
       .login-wrap{grid-template-columns:1fr}
@@ -196,21 +198,18 @@
     </div>
   </header>
 
-  <!-- Login Screen -->
+  <!-- Login Screen (ข้อความใหม่ตามที่ขอ) -->
   <section class="login-screen" id="loginScreen" aria-hidden="true">
     <div class="login-wrap">
       <div class="hero">
-        <h1>บินให้สนุก — เก็บชั่วโมงให้เป๊ะ</h1>
-        <p>Flight Logbook ที่เบา เร็ว และซิงก์แบบเรียลไทม์ด้วย Firebase.<br>
-           ใช้งานได้ทั้งมือถือและคอม — ไม่มีปลั๊กอินหรือ API ภายนอกอื่น</p>
+        <h1>บินให้สนุก - เก็บชั่วโมงให้เป๊ะ</h1>
+        <p>Flight Logbook ที่เบา เร็ว และซิงก์แบบเรียลไทม์ด้วย Firebase.</p>
+        <p>ใช้งานได้ทั้งมือถือและคอม - ไม่มีปลั๊กอินหรือ API ภายนอกอื่น</p>
         <div style="margin-top:18px">
-          <!-- เครื่องบินสวย ๆ -->
           <svg viewBox="0 0 640 300" fill="none">
-            <defs>
-              <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
-                <stop stop-color="#7dd3fc"/><stop offset="1" stop-color="#a78bfa"/>
-              </linearGradient>
-            </defs>
+            <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#7dd3fc"/><stop offset="1" stop-color="#a78bfa"/>
+            </linearGradient></defs>
             <path d="M40 240 C 140 210, 300 210, 600 240" stroke="url(#g2)" stroke-width="6" opacity=".25"/>
             <g transform="translate(60,40)">
               <path d="M0,80 L240,60 L250,70 L230,78 L100,92 L40,96 Z" fill="url(#g2)" opacity=".9"/>
@@ -223,25 +222,16 @@
 
       <div class="login-card">
         <h2>เข้าสู่ระบบ</h2>
-        <p class="hintline">กรอกชื่อเล่น/อายุ (ใช้แสดงในโปรไฟล์) — สามารถแก้ไขได้ภายหลัง</p>
-        <div class="login-field">
-          <label>ชื่อเล่น</label>
-          <input id="preNick" placeholder="เช่น โอม / NINE" maxlength="24">
-        </div>
-        <div class="login-field">
-          <label>อายุ</label>
-          <input id="preAge" type="number" inputmode="numeric" min="1" max="120" placeholder="เช่น 24">
-        </div>
+        <p class="hintline">ลงชื่อเข้าใช้ด้วย Google เพื่อเริ่มบันทึกเที่ยวบินของคุณ</p>
         <button class="btn gbtn" id="loginBtn">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
           Sign in with Google
         </button>
-        <div class="hintline">เมื่อเข้าสู่ระบบครั้งแรก ระบบจะบันทึกชื่อเล่น/อายุไว้ในโปรไฟล์ของคุณ</div>
       </div>
     </div>
   </section>
 
-  <!-- Profile Modal -->
+  <!-- Profile Modal (กรอกชื่อเล่น/อายุ หลังล็อกอิน) -->
   <section class="modal" id="profileModal" aria-hidden="true">
     <div class="panel">
       <h3>โปรไฟล์ของฉัน</h3>
@@ -289,8 +279,8 @@
                 <div class="field"><label>ทะเบียน</label><input id="registration" class="uc" autocapitalize="characters" placeholder="HS-XXX" inputmode="latin-name"></div>
               </div>
               <div class="row">
-                <div class="field"><label>ต้นทาง</label><input id="origin" class="uc" autocapitalize="characters" placeholder="BKK – Suvarnabhumi" inputmode="latin-name"></div>
-                <div class="field"><label>ปลายทาง</label><input id="destination" class="uc" autocapitalize="characters" placeholder="HKT – Phuket" inputmode="latin-name"></div>
+                <div class="field"><label>ต้นทาง</label><input id="origin" class="uc" autocapitalize="characters" placeholder="BKK – SUVAR…"></div>
+                <div class="field"><label>ปลายทาง</label><input id="destination" class="uc" autocapitalize="characters" placeholder="HKT – PHUKET"></div>
                 <div class="field"><label>Landings (Day/Night)</label>
                   <div class="row" style="align-items:center">
                     <input type="number" id="ldgDay" min="0" value="1" inputmode="numeric" style="max-width:120px">
@@ -355,6 +345,13 @@
                 <tbody id="rows"></tbody>
               </table>
             </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pager" hidden>
+              <span class="info" id="pageInfo"></span>
+              <button type="button" class="btn pgbtn" id="prevPage">ก่อนหน้า</button>
+              <button type="button" class="btn pgbtn" id="nextPage">ถัดไป</button>
+            </div>
           </div>
         </section>
       </div>
@@ -388,8 +385,7 @@
     // --- DOM ---
     const $=id=>document.getElementById(id);
     const uidTag=$("uidTag"), avatar=$("avatar"), googleBtn=$("googleLoginBtn"), signOutBtn=$("signOutBtn");
-    const loginScreen=$("loginScreen"), loginBtn=$("loginBtn"), preNick=$("preNick"), preAge=$("preAge");
-    const appMain=$("appMain");
+    const loginScreen=$("loginScreen"), loginBtn=$("loginBtn"), appMain=$("appMain");
 
     // Profile modal
     const profileModal=$("profileModal"), nickName=$("nickName"), age=$("age"), saveProfile=$("saveProfile"), closeProfile=$("closeProfile"), profileErr=$("profileErr");
@@ -406,6 +402,7 @@
     const filterBtn=$("filterBtn"), exportBtn=$("exportBtn"), printBtn=$("printBtn");
     const addDemoBtn=$("addDemoBtn"), resetBtn=$("resetBtn");
     const searchBar=$("searchBar"), clearSearch=$("clearSearch"), syncBadge=$("syncBadge");
+    const pager=$("pager"), prevPage=$("prevPage"), nextPage=$("nextPage"), pageInfo=$("pageInfo");
 
     const flightsCol = () => window.currentUID ? collection(db,"users",window.currentUID,"flights") : null;
     const userDoc    = () => window.currentUID ? doc(db,"users",window.currentUID) : null;
@@ -453,9 +450,6 @@
     }
 
     async function handleGoogleLogin(){
-      // บันทึกค่า prefill ชื่อเล่น/อายุชั่วคราวใน session
-      sessionStorage.setItem("preNick", (preNick.value||"").trim());
-      sessionStorage.setItem("preAge",  (preAge.value||"").trim());
       try{
         await signInWithPopup(auth, provider)
           .catch(async e=>{ if(/popup/i.test(e?.message||"")) await signInWithRedirect(auth, provider); else throw e; });
@@ -467,7 +461,6 @@
     googleBtn.addEventListener("click", handleGoogleLogin);
 
     signOutBtn.addEventListener("click", async ()=>{ try{ await signOut(auth);}catch(e){ console.error(e);} });
-
     getRedirectResult(auth).catch(()=>{});
 
     onAuthStateChanged(auth, async (user)=>{
@@ -477,17 +470,16 @@
         avatar.style.display = user.photoURL ? "inline-block":"none"; if(user.photoURL) avatar.src=user.photoURL;
         googleBtn.style.display="none"; signOutBtn.style.display="inline-block";
 
-        // สร้าง/อัปเดตโปรไฟล์
-        await ensureProfile(user);
-        // เข้าแอป
+        await ensureProfile(user);     // ถ้าไม่มีชื่อเล่น/อายุ ให้เด้ง modal
         showLoginScreen(false);
+        resetPaging();                 // รีเซ็ตหน้า
         searchBox.value=""; fromDate.value=""; toDate.value=""; searchBar.classList.remove("has-text");
         subscribeFlights();
       }else{
         window.currentUID=null;
         uidTag.textContent="Signed out"; uidTag.style.display="inline-block";
         avatar.style.display="none"; googleBtn.style.display="inline-block"; signOutBtn.style.display="none";
-        rows.innerHTML=""; setStats(0,0,0);
+        rows.innerHTML=""; setStats(0,0,0); cache=[]; totalPages=1; currentPage=1; updatePager();
         showLoginScreen(true);
       }
     });
@@ -495,26 +487,24 @@
     async function ensureProfile(user){
       const ref=userDoc(); if(!ref) return;
       const snap=await getDoc(ref);
-      const preNickVal = (sessionStorage.getItem("preNick")||"").trim();
-      const preAgeVal  = (sessionStorage.getItem("preAge")||"").trim();
 
       if(!snap.exists()){
         await setDoc(ref,{
           uid:user.uid,
           displayName:user.displayName||"",
           photoURL:user.photoURL||"",
-          nickname: preNickVal || "",
-          age: preAgeVal ? Number(preAgeVal) : null,
+          nickname:"",
+          age:null,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp()
         }, {merge:true});
       }
 
-      // ถ้ายังไม่มี nickname/age ให้เด้ง modal
-      const data = (await getDoc(ref)).data()||{};
-      if(!data.nickname || !data.age){
-        nickName.value = data.nickname || preNickVal || "";
-        age.value      = data.age || preAgeVal || "";
+      const data = (await getDoc(ref)).data() || {};
+      const hasAge = typeof data.age === "number" && !Number.isNaN(data.age);
+      if(!data.nickname || !hasAge){
+        nickName.value = data.nickname || (user.displayName?.split(" ")[0] || "");
+        age.value      = hasAge ? data.age : "";
         openProfile(true);
       }
     }
@@ -537,16 +527,14 @@
       const ref=userDoc(); if(!ref) return;
       await setDoc(ref,{ nickname:n, age:a, updatedAt:serverTimestamp() }, {merge:true});
       openProfile(false);
-      // ล้างค่า prefill ใน session
-      sessionStorage.removeItem("preNick"); sessionStorage.removeItem("preAge");
     });
 
     /* ---------- Search/Filter ---------- */
     function debounce(fn,ms=180){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
-    const onSearch = debounce(()=>{ searchBar.classList.toggle("has-text", !!searchBox.value.trim()); renderRows(cache); }, 120);
+    const onSearch = debounce(()=>{ searchBar.classList.toggle("has-text", !!searchBox.value.trim()); resetPaging(); renderRows(cache); }, 120);
     searchBox.addEventListener("input", onSearch);
-    clearSearch.addEventListener("click", ()=>{ searchBox.value=""; searchBar.classList.remove("has-text"); renderRows(cache); searchBox.focus(); });
-    filterBtn.addEventListener("click", ()=> renderRows(cache));
+    clearSearch.addEventListener("click", ()=>{ searchBox.value=""; searchBar.classList.remove("has-text"); resetPaging(); renderRows(cache); searchBox.focus(); });
+    filterBtn.addEventListener("click", ()=>{ resetPaging(); renderRows(cache); });
 
     /* ---------- Stats ---------- */
     function setStats(total, count, last30){
@@ -555,8 +543,21 @@
       $("stat30").textContent   = minutesToHHMM(last30);
     }
 
-    /* ---------- Realtime list ---------- */
+    /* ---------- Realtime list + Pagination ---------- */
     let unsub=null, cache=[];
+    let currentPage=1, totalPages=1;
+    const PAGE_SIZE=20;
+
+    function resetPaging(){ currentPage=1; totalPages=1; updatePager(); }
+    function updatePager(){
+      if(totalPages>1){ pager.hidden=false; pageInfo.textContent=`หน้า ${currentPage} / ${totalPages}`; }
+      else { pager.hidden=true; pageInfo.textContent=""; }
+      prevPage.disabled = currentPage<=1;
+      nextPage.disabled = currentPage>=totalPages;
+    }
+    prevPage.addEventListener("click", ()=>{ if(currentPage>1){ currentPage--; renderRows(cache); }});
+    nextPage.addEventListener("click", ()=>{ if(currentPage<totalPages){ currentPage++; renderRows(cache); }});
+
     function listenWithQuery(qy){
       if (unsub) { try{unsub()}catch{}; unsub=null; }
       unsub = onSnapshot(
@@ -573,7 +574,7 @@
         err => {
           if (err?.code === 'failed-precondition') {
             const col = flightsCol(); if(!col) return;
-            listenWithQuery(query(col, orderBy('depDate','desc'))); // fallback หากยังไม่มี index
+            listenWithQuery(query(col, orderBy('depDate','desc'))); // fallback ถ้ายังไม่มี index
           } else { console.error("Snapshot error:", err); }
         }
       );
@@ -593,7 +594,15 @@
         return ok;
       });
 
-      rows.innerHTML = filtered.map(x=>`
+      // paging rule: <=10 แสดงทั้งหมด, >10 แบ่งหน้า 20 รายการ
+      const usePaging = filtered.length > 10;
+      totalPages = usePaging ? Math.max(1, Math.ceil(filtered.length / PAGE_SIZE)) : 1;
+      if(currentPage>totalPages) currentPage=totalPages;
+      updatePager();
+
+      const view = usePaging ? filtered.slice((currentPage-1)*PAGE_SIZE, (currentPage)*PAGE_SIZE) : filtered;
+
+      rows.innerHTML = view.map(x=>`
         <tr data-id="${x.id}" class="${x.id===window._justAdded?'flash':''}">
           <td>${x.depDate}</td>
           <td><strong>${x.flightNo||""}</strong><div class="hint">${x.airline||""}</div></td>
@@ -686,7 +695,7 @@
 
     resetBtn.addEventListener("click",()=>{ logForm.reset(); setToday(); autoAdjustArrivalDate(); });
     addDemoBtn.addEventListener("click",()=>{ const iso=new Date().toISOString().slice(0,10);
-      depDate.value=iso; arrDate.value=iso; origin.value="BKK – Suvarnabhumi Airport"; destination.value="HKT – Phuket International Airport";
+      depDate.value=iso; arrDate.value=iso; origin.value="BKK – SUVARNABHUMI"; destination.value="HKT – PHUKET";
       airline.value="THA"; flightNo.value="TG201"; aircraftType.value="A320"; registration.value="HS-XXX";
       depTime.value="09:05"; arrTime.value="10:35"; depOffset.value="+07:00"; arrOffset.value="+07:00";
       autoAdjustArrivalDate();
