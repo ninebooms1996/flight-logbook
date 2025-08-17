@@ -78,12 +78,19 @@
     @keyframes fillRun{ 0%{ transform:translateX(-100%) } 100%{ transform:translateX(0) } }
     @keyframes planeRun{ 0%{ transform:translateX(0) } 100%{ transform:translateX(calc(100% - 32px)) } }
     .hidden{ display:none !important; }
+      /* Top-right sign out button */
+    .top-right{ position:absolute; right:18px; top:50%; transform:translateY(-50%); display:flex; align-items:center; gap:8px; z-index:41; }
+    .topbtn{ appearance:none; border:1px solid #334155; background:#0f172a; color:#e5e7eb; padding:10px 14px; border-radius:12px; font-weight:800; cursor:pointer; }
+    .topbtn:hover{ box-shadow:0 6px 16px #0006 }
   </style>
 </head>
 <body>
   <!-- Topbar (ticker only) -->
   <header class="topbar" role="navigation" aria-label="Topbar">
     <div class="topwrap">
+      <div class="top-right">
+        <button id="navSignOut" class="topbtn hidden" type="button">ออกจากระบบ</button>
+      </div>
       <div class="ticker" aria-hidden="true">
         <div class="track">
           <span class="item">BKK — Suvarnabhumi</span>
@@ -171,7 +178,7 @@
             <div class="tag">หน้าที่ 2 — บันทึกเที่ยวบิน</div>
           </div>
         </div>
-        <button id="signOutBtn" class="btn btn-secondary" type="button">ออกจากระบบ</button>
+        
       </div>
 
       <form id="flightForm" class="grid" autocomplete="off">
@@ -267,6 +274,9 @@
     const toast = (msg)=>{ toastEl.textContent = msg; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'), 2400); };
     const showLoader = (flag)=>{ document.getElementById('pageLoader')?.classList.toggle('show', !!flag); };
 
+    // Topbar sign-out button
+    const navSignOut = qs('#navSignOut');
+
     const signedOutView = qs('#signedOutView');
     const appView = qs('#appView');
 
@@ -275,13 +285,13 @@
     onAuthStateChanged(auth, (user)=>{
       showLoader(false);
       if(user){
-        // show app
         signedOutView.classList.add('hidden');
         appView.classList.remove('hidden');
+        navSignOut?.classList.remove('hidden');
       }else{
-        // show sign-in
         appView.classList.add('hidden');
         signedOutView.classList.remove('hidden');
+        navSignOut?.classList.add('hidden');
       }
     });
 
@@ -294,8 +304,10 @@
       try{ showLoader(true); await signInAnonymously(auth); }
       catch(err){ console.error(err); showLoader(false); toast('ไม่สามารถเข้าสู่ระบบแบบ Guest ได้'); }
     });
-    qs('#signOutBtn')?.addEventListener('click', async ()=>{
+    navSignOut?.addEventListener('click', async ()=>{
       try{ await signOut(auth); toast('ออกจากระบบแล้ว'); }
+      catch(err){ console.error(err); toast('ออกจากระบบไม่ได้'); }
+    }); toast('ออกจากระบบแล้ว'); }
       catch(err){ console.error(err); toast('ออกจากระบบไม่ได้'); }
     });
 
