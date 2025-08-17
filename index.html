@@ -49,9 +49,11 @@
     .btn-guest{ background:linear-gradient(90deg, #0ea5e9, #6366f1); color:white; }
     .btn-guest:hover{ box-shadow:0 10px 30px #0ea5e955; }
 
-    /* App form */
-    .grid{ display:grid; gap:16px; grid-template-columns: 1fr; margin-top:18px; }
-    @media (min-width:900px){ .grid{ grid-template-columns: 1fr 1fr; } }
+    /* App layout */
+    .appgrid{ display:grid; gap:16px; grid-template-columns: 1fr; margin-top:18px; align-items:start; }
+    @media (min-width:1000px){ .appgrid{ grid-template-columns: 1.1fr 0.9fr; } }
+    .formgrid{ display:grid; gap:16px; grid-template-columns: 1fr; }
+    @media (min-width:900px){ .formgrid{ grid-template-columns: 1fr 1fr; } }
     .field{ margin-bottom:12px; }
     .field label{ display:block; font-size:14px; color:#cbd5e1; margin-bottom:6px; }
     .row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
@@ -61,6 +63,14 @@
     .btn{ appearance:none; border:none; cursor:pointer; padding:14px 16px; border-radius:14px; font-weight:800; }
     .btn-primary{ background:linear-gradient(90deg, #22c55e, #16a34a); color:white; }
     .btn-secondary{ background:#111827; color:#e5e7eb; border:1px solid #334155; }
+
+    /* Entries list (right column) */
+    .list{ max-height: 620px; overflow:auto; display:grid; gap:10px; padding-right:4px; }
+    .list-empty{ color:var(--muted); padding:10px 0; }
+    .list-item{ border:1px solid #334155; border-radius:14px; padding:12px; background:#0f172a; display:flex; gap:6px; flex-direction:column; }
+    .list-item .row1{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .badge{ font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid #334155; background:#0b122399; }
+    .meta{ font-size:12px; color:#9aa4b2; }
 
     .toast{ position:fixed; right:16px; bottom:16px; padding:12px 14px; border-radius:12px; background:#111827; border:1px solid #374151; color:#e5e7eb; box-shadow:0 10px 30px #00000040; opacity:0; transform: translateY(6px); transition: all .2s ease; }
     .toast.show{ opacity:1; transform: translateY(0); }
@@ -181,52 +191,64 @@
         
       </div>
 
-      <form id="flightForm" class="grid" autocomplete="off">
-        <div class="panel">
-          <h2>ข้อมูลเที่ยวบิน (Flight Information)</h2>
-          <div class="field">
-            <label for="flightDateTime">วันที่และเวลาที่ทำการบิน</label>
-            <input id="flightDateTime" type="datetime-local" required />
+      <div class="appgrid">
+        <!-- LEFT: Form -->
+        <form id="flightForm" class="formgrid" autocomplete="off">
+          <div class="panel">
+            <h2>ข้อมูลเที่ยวบิน (Flight Information)</h2>
+            <div class="field">
+              <label for="flightDateTime">วันที่และเวลาที่ทำการบิน</label>
+              <input id="flightDateTime" type="datetime-local" required />
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="flightNumber">หมายเลขเที่ยวบิน (Flight Number)</label>
+                <input id="flightNumber" type="text" placeholder="เช่น TG102, FD1234" required />
+              </div>
+              <div class="field">
+                <label for="airline">สายการบิน</label>
+                <input id="airline" type="text" placeholder="เช่น Thai Airways" required />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="origin">ต้นทาง (Origin)</label>
+                <input id="origin" type="text" placeholder="เช่น BKK — Suvarnabhumi" required />
+              </div>
+              <div class="field">
+                <label for="destination">ปลายทาง (Destination)</label>
+                <input id="destination" type="text" placeholder="เช่น CNX — Chiang Mai" required />
+              </div>
+            </div>
           </div>
-          <div class="row">
-            <div class="field">
-              <label for="flightNumber">หมายเลขเที่ยวบิน (Flight Number)</label>
-              <input id="flightNumber" type="text" placeholder="เช่น TG102, FD1234" required />
-            </div>
-            <div class="field">
-              <label for="airline">สายการบิน</label>
-              <input id="airline" type="text" placeholder="เช่น Thai Airways" required />
-            </div>
-          </div>
-          <div class="row">
-            <div class="field">
-              <label for="origin">ต้นทาง (Origin)</label>
-              <input id="origin" type="text" placeholder="เช่น BKK — Suvarnabhumi" required />
-            </div>
-            <div class="field">
-              <label for="destination">ปลายทาง (Destination)</label>
-              <input id="destination" type="text" placeholder="เช่น CNX — Chiang Mai" required />
-            </div>
-          </div>
-        </div>
 
-        <div class="panel">
-          <h2>ข้อมูลเครื่องบิน (Aircraft Information)</h2>
-          <div class="field">
-            <label for="aircraftModel">รุ่นของเครื่องบิน (Aircraft Model)</label>
-            <input id="aircraftModel" type="text" placeholder="เช่น A320, B737-800" required />
+          <div class="panel">
+            <h2>ข้อมูลเครื่องบิน (Aircraft Information)</h2>
+            <div class="field">
+              <label for="aircraftModel">รุ่นของเครื่องบิน (Aircraft Model)</label>
+              <input id="aircraftModel" type="text" placeholder="เช่น A320, B737-800" required />
+            </div>
+            <div class="field">
+              <label for="registration">เครื่องหมายทะเบียน (Registration Number)</label>
+              <input id="registration" type="text" placeholder="เช่น HS-TJA" required />
+            </div>
           </div>
-          <div class="field">
-            <label for="registration">เครื่องหมายทะเบียน (Registration Number)</label>
-            <input id="registration" type="text" placeholder="เช่น HS-TJA" required />
-          </div>
-        </div>
 
-        <div class="actions-row">
-          <button class="btn btn-primary" type="submit">บันทึกเที่ยวบิน</button>
-          <button class="btn btn-secondary" type="reset">ล้างฟอร์ม</button>
-        </div>
-      </form>
+          <div class="actions-row">
+            <button class="btn btn-primary" type="submit">บันทึกเที่ยวบิน</button>
+            <button class="btn btn-secondary" type="reset">ล้างฟอร์ม</button>
+          </div>
+        </form>
+
+        <!-- RIGHT: Entries list -->
+        <aside class="panel" id="entriesPanel">
+          <h2>รายการที่บันทึก</h2>
+          <div id="entriesMeta" class="meta">0 รายการ</div>
+          <div id="entriesList" class="list">
+            <div class="list-empty">ยังไม่มีรายการที่บันทึก</div>
+          </div>
+        </aside>
+      </div>
     </div>
   </section>
 
@@ -274,11 +296,20 @@
     const toast = (msg)=>{ toastEl.textContent = msg; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'), 2400); };
     const showLoader = (flag)=>{ document.getElementById('pageLoader')?.classList.toggle('show', !!flag); };
 
-    // Topbar sign-out button
-    const navSignOut = qs('#navSignOut');
+    // (ออปชัน) กรอง error จากส่วนขยาย (เช่น MetaMask) ไม่ให้กวนคอนโซล
+    window.addEventListener('error', (e)=>{
+      if(String(e?.filename||'').startsWith('chrome-extension://')){ e.stopImmediatePropagation(); }
+    }, true);
+    window.addEventListener('unhandledrejection', (e)=>{
+      const msg = String(e?.reason?.message||e?.reason||'');
+      const stack = String(e?.reason?.stack||'');
+      if(msg.includes('MetaMask') || stack.includes('chrome-extension://')){ e.stopImmediatePropagation(); }
+    }, true);
 
+    // ---- Elements ----
     const signedOutView = qs('#signedOutView');
     const appView = qs('#appView');
+    const navSignOut = qs('#navSignOut');
 
     // Start with loader until auth resolves
     showLoader(true);
@@ -288,6 +319,7 @@
         signedOutView.classList.add('hidden');
         appView.classList.remove('hidden');
         navSignOut?.classList.remove('hidden');
+        renderEntries();
       }else{
         appView.classList.add('hidden');
         signedOutView.classList.remove('hidden');
@@ -300,14 +332,14 @@
       try{ showLoader(true); await signInWithRedirect(auth, provider); }
       catch(err){ console.error(err); showLoader(false); toast('ล็อกอินไม่สำเร็จ'); }
     });
+
     qs('#guestBtn')?.addEventListener('click', async ()=>{
       try{ showLoader(true); await signInAnonymously(auth); }
       catch(err){ console.error(err); showLoader(false); toast('ไม่สามารถเข้าสู่ระบบแบบ Guest ได้'); }
     });
+
     navSignOut?.addEventListener('click', async ()=>{
       try{ await signOut(auth); toast('ออกจากระบบแล้ว'); }
-      catch(err){ console.error(err); toast('ออกจากระบบไม่ได้'); }
-    }); toast('ออกจากระบบแล้ว'); }
       catch(err){ console.error(err); toast('ออกจากระบบไม่ได้'); }
     });
 
@@ -315,6 +347,79 @@
     const form = qs('#flightForm');
     form?.addEventListener('submit', (e)=>{
       e.preventDefault();
+      const data = {
+        dateTime: qs('#flightDateTime').value,
+        flightNumber: qs('#flightNumber').value.trim(),
+        airline: qs('#airline').value.trim(),
+        origin: qs('#origin').value.trim(),
+        destination: qs('#destination').value.trim(),
+        aircraftModel: qs('#aircraftModel').value.trim(),
+        registration: qs('#registration').value.trim()
+      };
+      try{
+        const key = 'flb_entries';
+        const all = JSON.parse(localStorage.getItem(key) || '[]');
+        const entry = { ...data, createdAt: Date.now() };
+        all.push(entry);
+        localStorage.setItem(key, JSON.stringify(all));
+        toast('บันทึกเที่ยวบินแล้ว');
+        form.reset();
+        renderEntries();
+      }catch(err){ console.error(err); toast('บันทึกไม่สำเร็จ'); }
+    });
+
+    // ---- Entries List helpers ----
+    const ENTRIES_KEY = 'flb_entries';
+    const entriesList = document.getElementById('entriesList');
+    const entriesMeta = document.getElementById('entriesMeta');
+
+    const esc = (s)=> String(s ?? '').replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+    const fmt = (dt, fallback)=>{
+      const d = dt ? new Date(dt) : (fallback? new Date(fallback): new Date());
+      try{ return d.toLocaleString('th-TH', { dateStyle:'medium', timeStyle:'short' }); }catch{ return d.toISOString(); }
+    };
+    const loadEntries = ()=>{
+      try{ return JSON.parse(localStorage.getItem(ENTRIES_KEY) || '[]'); }catch{ return []; }
+    };
+    const saveEntries = (arr)=> localStorage.setItem(ENTRIES_KEY, JSON.stringify(arr));
+
+    function renderEntries(){
+      if(!entriesList) return;
+      let arr = loadEntries();
+      arr.sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
+      if(!arr.length){
+        entriesList.innerHTML = '<div class="list-empty">ยังไม่มีรายการที่บันทึก</div>';
+        if(entriesMeta) entriesMeta.textContent = '0 รายการ';
+        return;
+      }
+      entriesList.innerHTML = arr.map(v=>{
+        const id = String(v.createdAt||'');
+        const top = `${esc(v.flightNumber||'—')} · ${esc(v.airline||'')}`;
+        const route = `${esc(v.origin||'—')} → ${esc(v.destination||'—')}`;
+        const meta = `${fmt(v.dateTime, v.createdAt)} · ${esc(v.aircraftModel||'')} · ${esc(v.registration||'')}`;
+        return `<div class="list-item" data-id="${id}">
+          <div class="row1">
+            <div><strong>${top}</strong></div>
+            <div class="actionbar"><button class="iconbtn" data-del="${id}">ลบ</button></div>
+          </div>
+          <div>${route}</div>
+          <div class="meta">${meta}</div>
+        </div>`;
+      }).join('');
+      if(entriesMeta) entriesMeta.textContent = `${arr.length} รายการ`;
+    }
+
+    // Delete item via delegation
+    entriesList?.addEventListener('click', (ev)=>{
+      const btn = ev.target.closest('[data-del]');
+      if(!btn) return;
+      const id = String(btn.getAttribute('data-del'));
+      let arr = loadEntries();
+      const next = arr.filter(v=> String(v.createdAt) !== id);
+      saveEntries(next);
+      renderEntries();
+      toast('ลบรายการแล้ว');
+    });
       const data = {
         dateTime: qs('#flightDateTime').value,
         flightNumber: qs('#flightNumber').value.trim(),
