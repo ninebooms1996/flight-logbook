@@ -72,6 +72,15 @@
     .badge{ font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid #334155; background:#0b122399; }
     .meta{ font-size:12px; color:#9aa4b2; }
 
+    /* Table view for entries */
+    .table{ width:100%; border-collapse:collapse; font-size:14px; }
+    .table th, .table td{ padding:10px 12px; border-bottom:1px solid #334155; text-align:left; }
+    .table thead th{ position:sticky; top:0; background:#0b1223; z-index:1; }
+    .table tbody tr:hover{ background:#0b122355; }
+    .table .narrow{ width:1%; white-space:nowrap; }
+    .iconbtn{ appearance:none; border:1px solid #334155; background:#111827; color:#e5e7eb; padding:6px 10px; border-radius:10px; cursor:pointer; font-size:12px; }
+    .iconbtn:hover{ box-shadow:0 6px 16px #0006 }
+
     .toast{ position:fixed; right:16px; bottom:16px; padding:12px 14px; border-radius:12px; background:#111827; border:1px solid #374151; color:#e5e7eb; box-shadow:0 10px 30px #00000040; opacity:0; transform: translateY(6px); transition: all .2s ease; }
     .toast.show{ opacity:1; transform: translateY(0); }
 
@@ -348,13 +357,13 @@
     form?.addEventListener('submit', (e)=>{
       e.preventDefault();
       const data = {
-        dateTime: qs('#flightDateTime').value,
-        flightNumber: qs('#flightNumber').value.trim(),
-        airline: qs('#airline').value.trim(),
-        origin: qs('#origin').value.trim(),
-        destination: qs('#destination').value.trim(),
-        aircraftModel: qs('#aircraftModel').value.trim(),
-        registration: qs('#registration').value.trim()
+        dateTime: qs('#flightDateTime')?.value,
+        flightNumber: qs('#flightNumber')?.value?.trim(),
+        airline: qs('#airline')?.value?.trim(),
+        origin: qs('#origin')?.value?.trim(),
+        destination: qs('#destination')?.value?.trim(),
+        aircraftModel: qs('#aircraftModel')?.value?.trim(),
+        registration: qs('#registration')?.value?.trim()
       };
       try{
         const key = 'flb_entries';
@@ -378,9 +387,7 @@
       const d = dt ? new Date(dt) : (fallback? new Date(fallback): new Date());
       try{ return d.toLocaleString('th-TH', { dateStyle:'medium', timeStyle:'short' }); }catch{ return d.toISOString(); }
     };
-    const loadEntries = ()=>{
-      try{ return JSON.parse(localStorage.getItem(ENTRIES_KEY) || '[]'); }catch{ return []; }
-    };
+    const loadEntries = ()=>{ try{ return JSON.parse(localStorage.getItem(ENTRIES_KEY) || '[]'); }catch{ return []; } };
     const saveEntries = (arr)=> localStorage.setItem(ENTRIES_KEY, JSON.stringify(arr));
 
     function renderEntries(){
@@ -392,20 +399,26 @@
         if(entriesMeta) entriesMeta.textContent = '0 รายการ';
         return;
       }
-      entriesList.innerHTML = arr.map(v=>{
+      const header = `<table class="table"><thead><tr>
+        <th>หมายเลขเที่ยวบิน (Flight Number)</th>
+        <th>สายการบิน</th>
+        <th>ต้นทาง (Origin)</th>
+        <th>ปลายทาง (Destination)</th>
+        <th>เครื่องหมายทะเบียน (Registration Number)</th>
+        <th class="narrow"></th>
+      </tr></thead><tbody>`;
+      const rows = arr.map(v=>{
         const id = String(v.createdAt||'');
-        const top = `${esc(v.flightNumber||'—')} · ${esc(v.airline||'')}`;
-        const route = `${esc(v.origin||'—')} → ${esc(v.destination||'—')}`;
-        const meta = `${fmt(v.dateTime, v.createdAt)} · ${esc(v.aircraftModel||'')} · ${esc(v.registration||'')}`;
-        return `<div class="list-item" data-id="${id}">
-          <div class="row1">
-            <div><strong>${top}</strong></div>
-            <div class="actionbar"><button class="iconbtn" data-del="${id}">ลบ</button></div>
-          </div>
-          <div>${route}</div>
-          <div class="meta">${meta}</div>
-        </div>`;
+        return `<tr data-id="${id}">
+          <td>${esc(v.flightNumber||'—')}</td>
+          <td>${esc(v.airline||'—')}</td>
+          <td>${esc(v.origin||'—')}</td>
+          <td>${esc(v.destination||'—')}</td>
+          <td>${esc(v.registration||'—')}</td>
+          <td><button class="iconbtn" data-del="${id}">ลบ</button></td>
+        </tr>`;
       }).join('');
+      entriesList.innerHTML = header + rows + '</tbody></table>';
       if(entriesMeta) entriesMeta.textContent = `${arr.length} รายการ`;
     }
 
@@ -419,24 +432,6 @@
       saveEntries(next);
       renderEntries();
       toast('ลบรายการแล้ว');
-    });
-      const data = {
-        dateTime: qs('#flightDateTime').value,
-        flightNumber: qs('#flightNumber').value.trim(),
-        airline: qs('#airline').value.trim(),
-        origin: qs('#origin').value.trim(),
-        destination: qs('#destination').value.trim(),
-        aircraftModel: qs('#aircraftModel').value.trim(),
-        registration: qs('#registration').value.trim()
-      };
-      try{
-        const key = 'flb_entries';
-        const all = JSON.parse(localStorage.getItem(key) || '[]');
-        all.push({ ...data, createdAt: Date.now() });
-        localStorage.setItem(key, JSON.stringify(all));
-        toast('บันทึกเที่ยวบินแล้ว');
-        form.reset();
-      }catch(err){ console.error(err); toast('บันทึกไม่สำเร็จ'); }
     });
   </script>
 </body>
